@@ -14,9 +14,10 @@ This plugin integrates Rollbar into your WordPress installation.
 
 * Follow me on Twitter [@flowdee](https://twitter.com/flowdee/) to stay in contact and informed about updates
 
+You like my work? [Support me](https://donate.flowdee.de/) or not. I don't mind, as long as I was able to help you :wink:
+
 ## Disclaimer
 
 This plugin is a community driven contribution. All rights reserved to Rollbar. 
 
 [![Rollbar](https://d26gfdfi90p7cf.cloudfront.net/rollbar-badge.144534.o.png)](https://rollbar.com/)
-

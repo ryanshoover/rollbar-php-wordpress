@@ -1,10 +1,10 @@
 === Rollbar ===
 Contributors: flowdee
-Donate link: http://donate.flowdee.de/
+Donate link: https://donate.flowdee.de/
 Tags: rollbar, full stack, error, tracking, error tracking, error reporting, reporting, debug
 Requires at least: 3.5.1
-Tested up to: 4.4.2
-Stable tag: 1.0.2
+Tested up to: 4.5.3
+Stable tag: 1.0.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -76,6 +76,11 @@ Yes of course. Additionally you can assign different environments to each of you
 
 == Changelog ==
 
+= Version 1.0.3 (12th August 2016) =
+* Updated rollbar php lib to latest v0.18.2
+* Added .pot translation file
+* Removed WP.org assets from plugin folder
+
 = Version 1.0.2 (28th March 2016) =
 * Updated rollbar js lib
 * Added escaping for setting values
@@ -84,6 +89,11 @@ Yes of course. Additionally you can assign different environments to each of you
 * Initial release!
 
 == Upgrade Notice ==
+
+= Version 1.0.3 (12th August 2016) =
+* Updated rollbar php lib to latest v0.18.2
+* Added .pot translation file
+* Removed WP.org assets from plugin folder
 
 = Version 1.0.2 (28th March 2016) =
 * Updated rollbar js lib
