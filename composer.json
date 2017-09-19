@@ -1,0 +1,19 @@
+{
+    "name": "rollbar/rollbar-php-wordpress",
+    "description": "WordPress plugin for Rollbar",
+    "type": "wordpress-plugin",
+    "require": {
+        "rollbar/rollbar": "^1.3"
+    },
+    "license": "GNU GPL",
+    "authors": [
+        {
+            "name": "flowdee",
+            "email": "hello@flowdee.de"
+        },
+        {
+            "name": "Artur Moczulski",
+            "email": "artur.moczulski@gmail.com"
+        }
+    ]
+}
