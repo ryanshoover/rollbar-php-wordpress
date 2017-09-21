@@ -11,15 +11,13 @@ if( !defined( 'ABSPATH' ) ) exit;
 
 /*
  * Libs
+ * 
+ * The included copy of rollbar-php is only going to be loaded if the it has
+ * not been loaded through Composer yet.
  */
-
-/*
- * TOOD: Below three lines have to be still taken under consideration in casse
- * composer is not being used in the WordPress project. What then?
- */
-// if( !class_exists( 'Rollbar' ) && !class_exists( 'RollbarNotifier' ) && !class_exists( 'Ratchetio' ) ) {
-//     require_once ROLLBAR_WP_DIR . 'includes/lib/rollbar.php';
-// }
+if( !class_exists( 'Rollbar\Rollbar' ) ) {
+    require_once ROLLBAR_WP_DIR . 'includes/lib/rollbar-php/vendor/autoload.php';
+}
 
 /*
  * PHP logging
