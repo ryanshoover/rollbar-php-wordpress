@@ -12,9 +12,14 @@ if( !defined( 'ABSPATH' ) ) exit;
 /*
  * Libs
  */
-if( !class_exists( 'Rollbar' ) && !class_exists( 'RollbarNotifier' ) && !class_exists( 'Ratchetio' ) ) {
-    require_once ROLLBAR_WP_DIR . 'includes/lib/rollbar.php';
-}
+
+/*
+ * TOOD: Below three lines have to be still taken under consideration in casse
+ * composer is not being used in the WordPress project. What then?
+ */
+// if( !class_exists( 'Rollbar' ) && !class_exists( 'RollbarNotifier' ) && !class_exists( 'Ratchetio' ) ) {
+//     require_once ROLLBAR_WP_DIR . 'includes/lib/rollbar.php';
+// }
 
 /*
  * PHP logging
@@ -52,7 +57,7 @@ function rollbar_wp_initialize_php_logging() {
     );
 
     // installs global error and exception handlers
-    Rollbar::init($config);
+    \Rollbar\Rollbar::init($config);
 }
 
 /*
@@ -92,25 +97,4 @@ function rollbar_wp_initialize_js_logging () {
 </script>
 ';
 
-}
-
-/*
- * Filter
- */
-function rollbar_wp_filter_php_errors ( $errfile ) {
-
-    if (strpos($errfile,'rollbar') !== false) {
-        return true;
-    }
-
-    return false;
-}
-
-/*
- * Helper
- */
-function rollbar_wp_debug($args) {
-    echo '<pre>';
-    print_r($args);
-    echo '</pre>';
 }

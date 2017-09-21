@@ -1,10 +1,10 @@
 <?php
 /**
- * Plugin Name:     Rollbar
- * Plugin URI:      https://wordpress.org/plugins/rollbar/
+ * Plugin Name:     Rollbar PHP Wordpress
+ * Plugin URI:      https://wordpress.org/plugins/rollbar-php-wordpress/
  * Description:     Rollbar full-stack error tracking for WordPress
- * Version:         1.0.3
- * Author:          flowdee
+ * Version:         2.0.0
+ * Author:          flowdee, arturmoczulski
  * Author URI:      http://flowdee.de
  * Text Domain:     rollbar
  *
@@ -12,7 +12,6 @@
  * @author          flowdee
  * @copyright       Copyright (c) flowdee
  */
-
 
 // Exit if accessed directly
 if( !defined( 'ABSPATH' ) ) exit;

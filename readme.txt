@@ -1,9 +1,9 @@
-=== Rollbar ===
-Contributors: flowdee
+=== Rollbar PHP Wordpress ===
+Contributors: flowdee, arturmoczulski
 Donate link: https://donate.flowdee.de/
 Tags: rollbar, full stack, error, tracking, error tracking, error reporting, reporting, debug
 Requires at least: 3.5.1
-Tested up to: 4.5.3
+Tested up to: 4.8.1
 Stable tag: 1.0.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
