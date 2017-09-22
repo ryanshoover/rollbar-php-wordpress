@@ -23,14 +23,30 @@ function rollbar_wp_get_settings()
 {
     $options = get_option( 'rollbar_wp' );
     
+    if (empty($options['environment'])) {
+        
+        if ($wpEnv = getenv('WP_ENV')) {
+            $options['environment'] = $wpEnv;
+        }
+        
+    }
+    
     $settings = array(
+        
         'php_logging_enabled' => (!empty($options['php_logging_enabled'])) ? 1 : 0,
+        
         'js_logging_enabled' => (!empty($options['js_logging_enabled'])) ? 1 : 0,
+        
         'server_side_access_token' => (!empty($options['server_side_access_token'])) ? 
             esc_attr(trim($options['server_side_access_token'])) : 
             '',
+            
         'client_side_access_token' => (!empty($options['client_side_access_token'])) ? trim($options['client_side_access_token']) : '',
-        'environment' => (!empty($options['environment'])) ? esc_attr(trim($options['environment'])) : '',
+        
+        'environment' => (!empty($options['environment'])) ? 
+            esc_attr(trim($options['environment'])) : 
+            '',
+        
         'logging_level' => (!empty($options['logging_level'])) ? esc_attr(trim($options['logging_level'])) : 1024
     );
     

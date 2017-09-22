@@ -160,7 +160,7 @@ if (!class_exists('ROLLBAR_WP_SETTINGS')) {
             <input type='text' name='rollbar_wp[environment]' id="rollbar_wp_environment"
                    value='<?php echo esc_attr(trim($environment)); ?>'>
             <p>
-                <small><?php _e('Define the current environment: e.g. "production" or "development".', 'rollbar-wp'); ?></small>
+                <small><?php _e('Define the current environment: e.g. "production" or "development". If none specified, it will be read from environment variable WP_ENV.', 'rollbar-wp'); ?></small>
             </p>
             <?php
         }
