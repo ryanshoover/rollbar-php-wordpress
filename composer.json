@@ -14,6 +14,21 @@
         {
             "name": "Artur Moczulski",
             "email": "artur.moczulski@gmail.com"
+        },
+        {
+          "name": "Rollbar, Inc.",
+          "email": "support@rollbar.com",
+          "role": "Developer"
         }
-    ]
+    ],
+
+    "support": {
+        "email": "support@rollbar.com"
+    },
+
+    "autoload": {
+      "psr-4": {
+        "Rollbar\\Wordpress\\": "src/"
+      }
+    }
 }
