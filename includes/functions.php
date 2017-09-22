@@ -19,39 +19,49 @@ if( !class_exists( 'Rollbar\Rollbar' ) ) {
     require_once ROLLBAR_WP_DIR . 'includes/lib/rollbar-php/vendor/autoload.php';
 }
 
+function rollbar_wp_get_settings()
+{
+    $options = get_option( 'rollbar_wp' );
+    
+    $settings = array(
+        'php_logging_enabled' => (!empty($options['php_logging_enabled'])) ? 1 : 0,
+        'js_logging_enabled' => (!empty($options['js_logging_enabled'])) ? 1 : 0,
+        'server_side_access_token' => (!empty($options['server_side_access_token'])) ? 
+            esc_attr(trim($options['server_side_access_token'])) : 
+            '',
+        'client_side_access_token' => (!empty($options['client_side_access_token'])) ? trim($options['client_side_access_token']) : '',
+        'environment' => (!empty($options['environment'])) ? esc_attr(trim($options['environment'])) : '',
+        'logging_level' => (!empty($options['logging_level'])) ? esc_attr(trim($options['logging_level'])) : 1024
+    );
+    
+    return $settings;
+}
+
 /*
  * PHP logging
  */
 function rollbar_wp_initialize_php_logging() {
-
-    $options = get_option( 'rollbar_wp' );
+    
+    $settings = rollbar_wp_get_settings();
 
     // Return if logging is not enabled
-    $php_logging_enabled = (!empty($options['php_logging_enabled'])) ? 1 : 0;
-
-    if ( $php_logging_enabled === 0 ) {
+    if ( $settings['php_logging_enabled'] === 0 ) {
         return;
     }
 
     // Return if access token is not set
-    $server_side_access_token = (!empty($options['server_side_access_token'])) ? esc_attr(trim($options['server_side_access_token'])) : '';
-
-    if ($server_side_access_token == '')
+    if ($settings['server_side_access_token'] == '')
         return;
-
-    // Finish config parameters
-    $environment = (!empty($options['environment'])) ? esc_attr(trim($options['environment'])) : '';
-    $logging_level = (!empty($options['logging_level'])) ? esc_attr(trim($options['logging_level'])) : 1024;
 
     // Config
     $config = array(
         // required
-        'access_token' => esc_attr(trim($server_side_access_token)),
+        'access_token' => $settings['server_side_access_token'],
         // optional - environment name. any string will do.
-        'environment' => esc_attr(trim($environment)),
+        'environment' => $settings['environment'],
         // optional - path to directory your code is in. used for linking stack traces.
         'root' => ABSPATH,
-        'max_errno' => esc_attr(trim($logging_level))
+        'max_errno' => $settings['logging_level']
     );
 
     // installs global error and exception handlers
@@ -62,30 +72,24 @@ function rollbar_wp_initialize_php_logging() {
  * JS Logging
  */
 function rollbar_wp_initialize_js_logging () {
-
-    $options = get_option( 'rollbar_wp' );
+    
+    $settings = rollbar_wp_get_settings();
 
     // Return if logging is not enabled
-    $js_logging_enabled = (!empty($options['js_logging_enabled'])) ? 1 : 0;
-
-    if ( $js_logging_enabled === 0 ) {
+    if ( $settings['js_logging_enabled'] === 0 ) {
         return;
     }
 
     // Return if access token is not set
-    $client_side_access_token = (!empty($options['client_side_access_token'])) ? trim($options['client_side_access_token']) : '';
-
-    if ($client_side_access_token == '')
+    if ($settings['client_side_access_token'] == '')
         return;
-
-    $environment = (!empty($options['environment'])) ? wp_json_encode(trim($options['environment'])) : '';
     
     $rollbarJs = Rollbar\RollbarJsHelper::buildJs(
         array(
-            "accessToken" => $client_side_access_token,
+            'accessToken' => $settings['client_side_access_token'],
             "captureUncaught" => true,
             "payload" => array(
-                "environment" => $environment
+                'environment' => $settings['environment']
             ),
         )
     );
