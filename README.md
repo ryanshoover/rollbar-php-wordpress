@@ -10,7 +10,9 @@ This plugin integrates Rollbar into your WordPress installation.
 
 [Official WordPress.org Plugin](https://wordpress.org/plugins/rollbar/)
 
-**To find out how Rollbar can help you decrease development and maintenance costs [click here](https://rollbar.com/features/).**
+Find out [how Rollbar can help you decrease development and maintenance costs](https://rollbar.com/features/).
+
+See [real companies improving their development workflow thanks to Rollbar](https://rollbar.com/customers/).
 
 ## Installation
 
