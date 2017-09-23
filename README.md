@@ -31,7 +31,7 @@ The easiest way to install the plugin is from the WordPress Plugin directory. If
 
 *Warning*: This installation method might not be suitable for complex WordPress projects. The plugin installed this way will be self-contained and include all of required dependencies for itself and rollbar/rollbar-php library. In complex projects, this might lead to version conflicts between dependencies and other plugins / packages. If this is an issue in your project, we recommend the "Advanced" installation method. For more information why this might be important for you, read [Using Composer with WordPress]().
 
-### Through [wpackagist](https://wpackagist.org/) (if you manage your project with Composer)
+### Through [wpackagist](https://wpackagist.org/) (if you manage your project with Composer) *recommended*
 
 This is a recommended way to install Rollbar plugin for advanced projects. This way ensures the plugin and all of its' dependencies are managed by Composer.
 
