@@ -12,7 +12,7 @@ This plugin integrates Rollbar into your WordPress installation.
 
 ## Installation
 
-### Simple
+### Through [WordPress Plugin directory](https://wordpress.org/plugins/rollbar/)
 
 The easiest way to install the plugin is from the WordPress Plugin directory. If you have an existing WordPress installation and you want to add Rollbar:
 
@@ -31,17 +31,17 @@ The easiest way to install the plugin is from the WordPress Plugin directory. If
 
 *Warning*: This installation method might not be suitable for complex WordPress projects. The plugin installed this way will be self-contained and include all of required dependencies for itself and rollbar/rollbar-php library. In complex projects, this might lead to version conflicts between dependencies and other plugins / packages. If this is an issue in your project, we recommend the "Advanced" installation method. For more information why this might be important for you, read [Using Composer with WordPress]().
 
-### Advanced (if you manage your project with Composer)
+### Through [wpackagist](https://wpackagist.org/) (if you manage your project with Composer)
 
 This is a recommended way to install Rollbar plugin for advanced projects. This way ensures the plugin and all of its' dependencies are managed by Composer.
 
 1. If your WordPress project is not managed with Composer yet, we suggest looking into upgrading your WordPress: [Using Composer with WordPress]().
-2. In your `composer.json` add `rollbar/rollbar-php-wordpress` to your `require` section, i.e.:
+2. In your `composer.json` add `wpackagist-plugin/rollbar-php-wordpress` to your `require` section, i.e.:
 ```json
   "require": {
     "php": ">=5.5",
     ...
-    "rollbar/rollbar-php-wordpress": "dev-master"
+    "wpackagist-plugin/rollbar-php-wordpress": "dev-master"
   }
 ```
 3. Issue command `composer install` in the root directory of your WordPress project.
