@@ -4,13 +4,12 @@
  * Plugin URI:      https://wordpress.org/plugins/rollbar-php-wordpress/
  * Description:     Rollbar full-stack error tracking for WordPress
  * Version:         2.0.0
- * Author:          flowdee, arturmoczulski
- * Author URI:      http://flowdee.de
+ * Author:          Rollbar
+ * Author URI:      https://rollbar.com
  * Text Domain:     rollbar
  *
  * @package         Rollbar\Wordpress
  * @author          flowdee,arturmoczulski
- * @copyright       Copyright (c) flowdee
  * @copyright       Rollbar, Inc.
  */
  
