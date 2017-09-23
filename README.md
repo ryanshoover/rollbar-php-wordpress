@@ -65,7 +65,7 @@ For bug reports, please [open an issue on GitHub](https://github.com/rollbar/rol
 
 ## Special thanks
 
-The original author of this package is [@flowdee](https://twitter.com/flowdee/). Thi si s a fork and continuation of this efforts.
+The original author of this package is [@flowdee](https://twitter.com/flowdee/). This is a fork and continuation of his efforts.
 
 ## Contributing
 
