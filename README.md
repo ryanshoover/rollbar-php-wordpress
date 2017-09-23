@@ -30,6 +30,7 @@ The easiest way to install the plugin is from the WordPress Plugin directory. If
 10. Paste the tokens you copied in step 7 in `Access Token` section.
 11. Provide the name of your environment in `Environment`. By default, the environment will be taken from `WP_ENV` environment variable if it's set otherwise it's blank. We recommend to fill this out either with `development` or `production`.
 12. Pick a minimum logging level. Only errors at that or higher level will be reported. For reference: [PHP Manual: Predefined Error Constants](http://php.net/manual/en/errorfunc.constants.php).
+13. Click `Save Changes`.
 
 **Warning**: This installation method might not be suitable for complex WordPress projects. The plugin installed this way will be self-contained and include all of the required dependencies for itself and rollbar/rollbar-php library. In complex projects, this might lead to version conflicts between dependencies and other plugins/packages. If this is an issue in your project, we recommend the "Advanced" installation method. For more information why this might be important for you, read [Using Composer with WordPress]().
 
@@ -56,6 +57,7 @@ This is a recommended way to install Rollbar plugin for advanced projects. This 
 10. Paste the tokens you copied in step 7 in `Access Token` section.
 11. Provide the name of your environment in `Environment`. By default, the environment will be taken from `WP_ENV` environment variable if it's set otherwise it's blank.
 12. Pick a minimum logging level. Only errors at that or higher level will be reported. For reference: [PHP Manual: Predefined Error Constants](http://php.net/manual/en/errorfunc.constants.php).
+13. Click `Save Changes`.
 
 ## Help / Support
 
