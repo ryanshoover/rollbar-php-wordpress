@@ -1,5 +1,5 @@
 === Rollbar PHP Wordpress ===
-Contributors: arturmoczulski, flowdee
+Contributors: arturmoczulski
 Tags: rollbar, full stack, error, tracking, error tracking, error reporting, reporting, debug
 Requires at least: 3.5.1
 Tested up to: 4.8.2
