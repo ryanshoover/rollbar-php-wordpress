@@ -183,8 +183,16 @@ class Settings
             <?php
             settings_fields('rollbar_wp');
             do_settings_sections('rollbar_wp');
+            ?>
+            <?php
             submit_button();
             ?>
+            <!--<button -->
+            <!--    type="button" -->
+            <!--    class="button button-secondary"-->
+            <!--    name="test-logging">-->
+            <!--    Send test message to Rollbar-->
+            <!--</button>-->
 
         </form>
         <?php

@@ -83,6 +83,37 @@ class Plugin {
     private function hooks() {
         \add_action('init', array(&$this, 'initPhpLogging'));
         \add_action('wp_head', array(&$this, 'initJsLogging'));
+        $this->registerTestEndpoint();
+    }
+    
+    private function registerTestEndpoint() {
+        \add_action( 'rest_api_init', function () {
+            \register_rest_route(
+                'rollbar-php-wordpress/v1', 
+                '/test-php-logging',
+                array(
+                    'methods' => 'GET',
+                    'callback' => '\Rollbar\Wordpress\Plugin::testPhpLogging',
+                    'args' => array(
+                        'access_token' => array(
+                            'required' => true
+                        ),
+                        'environment' => array(
+                            'required' => true
+                        ),
+                        'logging_level' => array(
+                            'required' => true
+                        )
+                    )
+                )
+            );
+        });
+    }
+    
+    public function testPhpLogging(\WP_REST_Request $request) {
+        
+        die("Rollbar endpoint");
+        
     }
 
     public function loadTextdomain() {
