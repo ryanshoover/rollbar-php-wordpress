@@ -106,7 +106,10 @@ Yes. It's actually the recommended method of installation.
 
 == Changelog ==
 
-= Version 2.0.0 (9th October 2017) =
+= Version 2.0.1 (6th October 2017) =
+* Fixed RollbarJsHelper class loading bug in src/Plugin.php (https://github.com/rollbar/rollbar-php-wordpress/issues/23)
+
+= Version 2.0.0 (9th September 2017) =
 * Added support for the WP_ENV environment variable
 * Organized the code into namespaces
 * Moved helper functions into static methods
@@ -127,6 +130,9 @@ Yes. It's actually the recommended method of installation.
 * Initial release!
 
 == Upgrade Notice ==
+
+= Version 2.0.1 (6th October 2017) =
+* Fixed RollbarJsHelper class loading bug in src/Plugin.php (https://github.com/rollbar/rollbar-php-wordpress/issues/23)
 
 = Version 2.0.0 (9th October 2017) =
 * Added support for the WP_ENV environment variable
