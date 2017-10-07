@@ -160,7 +160,7 @@ class Plugin {
         if ($this->settings['client_side_access_token'] == '')
             return;
         
-        $rollbarJs = Rollbar\RollbarJsHelper::buildJs(
+        $rollbarJs = \Rollbar\RollbarJsHelper::buildJs(
             array(
                 'accessToken' => $this->settings['client_side_access_token'],
                 "captureUncaught" => true,
