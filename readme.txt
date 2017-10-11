@@ -1,4 +1,4 @@
-=== Rollbar PHP Wordpress ===
+=== Rollbar ===
 Contributors: arturmoczulski
 Tags: rollbar, full stack, error, tracking, error tracking, error reporting, reporting, debug
 Requires at least: 3.5.1
@@ -72,12 +72,12 @@ The easiest way to install the plugin is from the WordPress Plugin directory. If
 This is a recommended way to install Rollbar plugin for advanced projects. This way ensures the plugin and all of its' dependencies are managed by Composer.
 
 1. If your WordPress project is not managed with Composer yet, we suggest looking into upgrading your WordPress: [Using Composer with WordPress]().
-2. In your `composer.json` add `wpackagist-plugin/rollbar-php-wordpress` to your `require` section, i.e.:
+2. In your `composer.json` add `wpackagist-plugin/rollbar` to your `require` section, i.e.:
 ```
   "require": {
     "php": ">=5.5",
     ...,
-    "wpackagist-plugin/rollbar-php-wordpress": "dev-master"
+    "wpackagist-plugin/rollbar": "dev-master"
   }
 ```
 3. Issue command `composer install` in the root directory of your WordPress project.
