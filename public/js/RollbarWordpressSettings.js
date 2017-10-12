@@ -32,27 +32,27 @@
             phpSuccessNotice = function() {
                 successNotice(
                     'Test message sent to Rollbar using PHP. Please, check your Rollbar '+
-                    'dashboard to see if you received it.'
+                    'dashboard to see if you received it. Save your changes and '+
+                    'you\'re ready to go.'
                 );
             },
             phpFailNotice = function() {
                 failNotice(
                     'There was a problem accessing Rollbar service using provided credentials '+
-                    'for PHP logging. Check your server side token. Save your changes and '+
-                    'you\'re ready to go.'
+                    'for PHP logging. Check your server side token.'
                 )
             },
             jsSuccessNotice = function() {
                 successNotice(
                     'Test message sent to Rollbar using JS. Please, check your Rollbar '+
-                    'dashboard to see if you received it.'
+                    'dashboard to see if you received it. Save your changes and '+
+                    'you\'re ready to go.'
                 );
             },
             jsFailNotice = function() {
                 failNotice(
                     'There was a problem accessing Rollbar service using provided credentials '+
-                    'for JS logging. Check your client side token. Save your changes and '+
-                    'you\'re ready to go.'
+                    'for JS logging. Check your client side token.'
                 )
             },
             logThroughPhp = function(server_side_access_token, environment, logging_level) {
@@ -91,7 +91,7 @@
                 if (window.Rollbar == undefined) {
                     
                     jQuery.ajax({
-                        url: '/app/plugins/rollbar-php-wordpress/vendor/rollbar/rollbar/data/rollbar.snippet.js',
+                        url: '/app/plugins/rollbar/vendor/rollbar/rollbar/data/rollbar.snippet.js',
                         success: function(data){
                             eval(data);
                         },
