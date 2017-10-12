@@ -77,7 +77,7 @@ This is a recommended way to install Rollbar plugin for advanced projects. This 
   "require": {
     "php": ">=5.5",
     ...,
-    "wpackagist-plugin/rollbar": "dev-master"
+    "wpackagist-plugin/rollbar": "*"
   }
 ```
 3. Issue command `composer install` in the root directory of your WordPress project.
