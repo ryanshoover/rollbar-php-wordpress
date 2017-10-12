@@ -2,6 +2,8 @@
  
 namespace Rollbar\Wordpress;
 
+use \Rollbar\Payload\Level as Level;
+
 // Exit if accessed directly
 if( !defined( 'ABSPATH' ) ) exit;
 
@@ -89,13 +91,13 @@ class Plugin {
     private function registerTestEndpoint() {
         \add_action( 'rest_api_init', function () {
             \register_rest_route(
-                'rollbar-php-wordpress/v1', 
+                'rollbar/v1', 
                 '/test-php-logging',
                 array(
-                    'methods' => 'GET',
+                    'methods' => 'POST',
                     'callback' => '\Rollbar\Wordpress\Plugin::testPhpLogging',
                     'args' => array(
-                        'access_token' => array(
+                        'server_side_access_token' => array(
                             'required' => true
                         ),
                         'environment' => array(
@@ -110,9 +112,27 @@ class Plugin {
         });
     }
     
-    public function testPhpLogging(\WP_REST_Request $request) {
+    public static function testPhpLogging(\WP_REST_Request $request) {
         
-        die("Rollbar endpoint");
+        $plugin = self::instance();
+        
+        $plugin->settings['server_side_access_token'] = $request->get_param("server_side_access_token");
+        $plugin->settings['environment'] = $request->get_param("environment");
+        $plugin->settings['logging_level'] = $request->get_param("logging_level");
+        
+        try {
+            $plugin->initPhpLogging();
+            
+            \Rollbar\Rollbar::log(
+                Level::INFO,
+                "Test message from Rollbar Wordpress plugin using PHP: ".
+                "integration with Wordpress successful"
+            );
+        } catch( \Exception $exception ) {
+            return new \WP_REST_Response(array(), 500);   
+        }
+        
+        return new \WP_REST_Response(array(), 200);
         
     }
 
