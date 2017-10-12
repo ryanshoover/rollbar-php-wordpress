@@ -57,7 +57,7 @@
             },
             logThroughPhp = function(server_side_access_token, environment, logging_level) {
                 jQuery.post(
-                    "/wp-json/rollbar/v1/test-php-logging",
+                    "/index.php?rest_route=/rollbar/v1/test-php-logging",
                     {
                         "server_side_access_token": server_side_access_token,
                         "environment": environment,
