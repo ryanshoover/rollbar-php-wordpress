@@ -91,7 +91,7 @@
                 if (window.Rollbar == undefined) {
                     
                     jQuery.ajax({
-                        url: '/app/plugins/rollbar/vendor/rollbar/rollbar/data/rollbar.snippet.js',
+                        url: RollbarWordpress.plugin_url + "vendor/rollbar/rollbar/data/rollbar.snippet.js",
                         success: function(data){
                             eval(data);
                         },

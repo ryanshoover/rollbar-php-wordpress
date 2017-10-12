@@ -106,7 +106,11 @@ Yes. It's actually the recommended method of installation.
 
 == Changelog ==
 
-= Verison 2.1.1 (11th October 2017) =
+= Version 2.1.2 (11th October 2017) =
+* Use the default rest route instead of permalink /wp-json
+* Dynamically build the Rollbar JS snippet URL
+
+= Version 2.1.1 (11th October 2017) =
 * Fixed location of the Rollbar JS snippet
 
 = Version 2.1.0 (11th October 2017) =
@@ -138,7 +142,11 @@ Yes. It's actually the recommended method of installation.
 
 == Upgrade Notice ==
 
-= Verison 2.1.1 (11th October 2017) =
+= Version 2.1.2 (11th October 2017) =
+* Use the default rest route instead of permalink /wp-json
+* Dynamically build the Rollbar JS snippet URL
+
+= Version 2.1.1 (11th October 2017) =
 * Fixed location of the Rollbar JS snippet
 
 = Version 2.1.0 (11th October 2017) =

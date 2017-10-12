@@ -34,12 +34,22 @@ class Settings
                 return;
             }
             
+            \wp_register_script( 'RollbarWordpressSettings.js', \plugin_dir_url(__FILE__)."../public/js/RollbarWordpressSettings.js" );
+            
+            \wp_localize_script(
+                'RollbarWordpressSettings.js', 
+                'RollbarWordpress', 
+                array(
+                    'plugin_url' => \plugin_dir_url(__FILE__) . "../",
+                )
+            );
+            
             \wp_enqueue_script(
                 "RollbarWordpressSettings.js",
                 \plugin_dir_url(__FILE__)."../public/js/RollbarWordpressSettings.js", 
                 array("jquery"),
                 "2.0.1"
-            );            
+            );  
         });
 
     }
