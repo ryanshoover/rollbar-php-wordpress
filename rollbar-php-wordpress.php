@@ -1,9 +1,9 @@
 <?php
 /**
  * Plugin Name:     Rollbar
- * Plugin URI:      https://wordpress.org/plugins/rollbar-php-wordpress/
+ * Plugin URI:      https://wordpress.org/plugins/rollbar
  * Description:     Rollbar full-stack error tracking for WordPress
- * Version:         2.0.1
+ * Version:         2.1.0
  * Author:          Rollbar
  * Author URI:      https://rollbar.com
  * Text Domain:     rollbar

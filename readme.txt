@@ -3,7 +3,7 @@ Contributors: arturmoczulski
 Tags: rollbar, full stack, error, tracking, error tracking, error reporting, reporting, debug
 Requires at least: 3.5.1
 Tested up to: 4.8.2
-Stable tag: 2.0.1
+Stable tag: 2.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -106,6 +106,10 @@ Yes. It's actually the recommended method of installation.
 
 == Changelog ==
 
+= Version 2.1.0 (11th October 2017) =
+* Added "Send test message to Rollbar" button
+* Fixed the plugin's name inconsistency between Wordpress plugin directory and composer.
+
 = Version 2.0.1 (6th October 2017) =
 * Fixed RollbarJsHelper class loading bug in src/Plugin.php (https://github.com/rollbar/rollbar-php-wordpress/issues/23)
 
@@ -130,6 +134,10 @@ Yes. It's actually the recommended method of installation.
 * Initial release!
 
 == Upgrade Notice ==
+
+= Version 2.1.0 (11th October 2017) =
+* Added "Send test message to Rollbar" button
+* Fixed the plugin's name inconsistency between Wordpress plugin directory and composer.
 
 = Version 2.0.1 (6th October 2017) =
 * Fixed RollbarJsHelper class loading bug in src/Plugin.php (https://github.com/rollbar/rollbar-php-wordpress/issues/23)
