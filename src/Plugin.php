@@ -180,14 +180,19 @@ class Plugin {
         if ($this->settings['client_side_access_token'] == '')
             return;
         
+
+        $rollbarJsConfig = array(
+          'accessToken' => $this->settings['client_side_access_token'],
+          'captureUncaught' => true,
+          'payload' => array(
+            'environment' => $this->settings['environment']
+          ),
+        );
+
+        $rollbarJsConfig = apply_filters('rollbar_js_config', $rollbarJsConfig);
+        
         $rollbarJs = \Rollbar\RollbarJsHelper::buildJs(
-            array(
-                'accessToken' => $this->settings['client_side_access_token'],
-                "captureUncaught" => true,
-                "payload" => array(
-                    'environment' => $this->settings['environment']
-                ),
-            )
+          $rollbarJsConfig
         );
         
         echo $rollbarJs;
