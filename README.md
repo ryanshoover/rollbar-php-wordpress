@@ -61,6 +61,41 @@ This is a recommended way to install Rollbar plugin for advanced projects. This 
 12. Pick a minimum logging level. Only errors at that or higher level will be reported. For reference: [PHP Manual: Predefined Error Constants](http://php.net/manual/en/errorfunc.constants.php).
 13. Click `Save Changes`.
 
+## Configuration
+
+### `rollbar_js_config` filter
+
+Allows a plugin to modify the JS config passed to Rollbar.
+
+You can use this e.g. to add the currently logged in user to the `person` field
+of the payload. With this change, you could have this plugin:
+
+```php
+class RollbarWPUser {
+
+  public function __construct(){
+    add_filter( 'rollbar_js_config', array($this, 'rollbar_js_config') );
+  }
+
+  function rollbar_js_config($config) {
+    if(is_user_logged_in()) {
+      $user = wp_get_current_user();  
+      
+      if(empty($config['payload']['person'])) {
+        $config['payload']['person'] = array(
+          'id' => $user->ID,
+          'username' => $user->user_login,
+          'email' => $user->user_email
+        );
+      }
+    }
+
+    return $config;
+  }
+  
+}
+```
+
 ## Help / Support
 
 If you run into any issues, please email us at [support@rollbar.com](mailto:support@rollbar.com)
