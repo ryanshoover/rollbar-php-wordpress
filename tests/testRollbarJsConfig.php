@@ -9,8 +9,28 @@ namespace Rollbar\Wordpress\Tests;
 class RollbarJSConfigTest extends \WP_UnitTestCase {
 
 	function testRollbarJsConfig() {
-		// Replace this with some actual testing code.
-		$this->assertTrue( true );
+		
+		$expected = array(
+          'id' => '1',
+          'username' => 'test',
+          'email' => 'wptest@rollbar.com'
+        );
+		
+		\add_filter( 'rollbar_js_config', function($config) use ($expected) {
+			
+	        $config['payload']['person'] = $expected;
+	        
+		    return $config;
+			
+		});
+		
+		$plugin = \Rollbar\Wordpress\Plugin::instance();
+		$plugin->setting('client_side_access_token', 'XXX');
+		$plugin->setting('js_logging_enabled', '1');
+		
+		$jsConfig = $plugin->buildJsConfig();
+		
+		$this->assertEquals($expected, $jsConfig['payload']['person']);
 	}
 	
 }

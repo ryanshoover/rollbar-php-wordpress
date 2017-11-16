@@ -32,6 +32,11 @@
         "Rollbar\\Wordpress\\": "src/"
       }
     },
+    "extra": {
+        "scripts-description": {
+            "test": "Run all tests. Make sure that local Mysql server is running."
+        }
+     },
     "scripts": {
         "test": [
             "@pre-test",

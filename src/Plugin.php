@@ -81,6 +81,12 @@ class Plugin {
         $this->settings = $settings;
         
     }
+    
+    public function setting($setting, $value) {
+    
+        $this->settings[$setting] = $value;
+        
+    }
 
     private function hooks() {
         \add_action('init', array(&$this, 'initPhpLogging'));
@@ -180,7 +186,14 @@ class Plugin {
         if ($this->settings['client_side_access_token'] == '')
             return;
         
-
+        $rollbarJs = \Rollbar\RollbarJsHelper::buildJs($this->buildJsConfig());
+        
+        echo $rollbarJs;
+        
+    }
+    
+    public function buildJsConfig()
+    {
         $rollbarJsConfig = array(
           'accessToken' => $this->settings['client_side_access_token'],
           'captureUncaught' => true,
@@ -191,12 +204,7 @@ class Plugin {
 
         $rollbarJsConfig = apply_filters('rollbar_js_config', $rollbarJsConfig);
         
-        $rollbarJs = \Rollbar\RollbarJsHelper::buildJs(
-          $rollbarJsConfig
-        );
-        
-        echo $rollbarJs;
-        
+        return $rollbarJsConfig;
     }
 }
 
