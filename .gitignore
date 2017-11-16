@@ -30,6 +30,15 @@ dwsync.xml
 *.komodoproject
 .komodotools
 
+# PHPUnit
+phpunit.xml
+
+# PHPCS
+phpcs.xml
+
+# Composer
+composer.lock
+
 # Folders to ignore
 .hg
 .svn
@@ -38,3 +47,4 @@ intermediate
 .idea
 cache
 deploy.sh
+vendor
