@@ -8,7 +8,7 @@ namespace Rollbar\Wordpress\Tests;
  */
 class RollbarJSConfigTest extends \WP_UnitTestCase {
 
-	function test_rollbarJsConfig() {
+	function testRollbarJsConfig() {
 		// Replace this with some actual testing code.
 		$this->assertTrue( true );
 	}
