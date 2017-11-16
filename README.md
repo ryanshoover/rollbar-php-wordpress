@@ -116,6 +116,17 @@ The original author of this package is [@flowdee](https://twitter.com/flowdee/).
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
 
+## Testing
+*Note:* Before you run `composer test`, make sure your mysql instance is running and the following are correct credentials:
+Test database: wordpress_test
+Test db username: root 
+Test db password: '' 
+Test db host: localhost
+
+Tests are in `tests`.
+To run the tests: `composer test`
+To fix code style issues: `composer fix`
+
 ## Disclaimer
 
 This plugin is a community-driven contribution. All rights reserved to Rollbar. 
