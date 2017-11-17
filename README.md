@@ -117,11 +117,8 @@ The original author of this package is [@flowdee](https://twitter.com/flowdee/).
 5. Create new Pull Request
 
 ## Testing
-*Note:* Before you run `composer test`, make sure your mysql instance is running and the following are correct credentials:
-Test database: wordpress_test
-Test db username: root 
-Test db password: '' 
-Test db host: localhost
+
+*Note:* Before you run tests, provide test database credentials in `phpunit.env` and start your mysqld service.
 
 Tests are in `tests`.
 To run the tests: `composer test`
