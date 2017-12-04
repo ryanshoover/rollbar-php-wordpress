@@ -129,20 +129,20 @@ To fix code style issues: `composer fix`
 This is only for contributors with committer access:
 
 1. Bump the plugin version.
-1.1. Bump the plugin version in `readme.txt` under `Stable tag`.
-1.2. Bump the plugin version in `readme.txt` under `Stable tag`.
-1.3. Add record in the `Changelog` section of the `readme.txt`.
-1.4. Add record in the `Upgrade Notice` section of the `readme.txt`.
-1.5. Bump the plugin version in `rollbar-php-wordpress.php` in the `Version:` comment.
+    1. Bump the plugin version in `readme.txt` under `Stable tag`.
+    2. Bump the plugin version in `readme.txt` under `Stable tag`.
+    3. Add record in the `Changelog` section of the `readme.txt`.
+    4. Add record in the `Upgrade Notice` section of the `readme.txt`.
+    5. Bump the plugin version in `rollbar-php-wordpress.php` in the `Version:` comment.
 2. Tag the new version from the `master` branch and push upstream with `git tag [version number] && git push --tags`.
 3. Update the WordPress Plugin Directory Subversion Repository.
-3.1. Remove the contents of `trunk/` with `rm -Rf trunk/*`.
-3.2. Update the contents of `trunk/` with a clone of the tag you created in step 2.
-3.2.1. `git clone https://github.com/rollbar/rollbar-php-wordpress.git trunk/`
-3.2.2. `git checkout tags/[version number]`
-3.2.3. `rm -Rf trunk/.git`
-3.2.4. `svn commit -m"Sync with GitHub repo"`
-3.3. Create the Subversion tag: `svn copy https://plugins.svn.wordpress.org/rollbar/trunk https://plugins.svn.wordpress.org/rollbar/tags/[version number] -m"Tag [version number]"`.
+    1. Remove the contents of `trunk/` with `rm -Rf trunk/*`.
+    2. Update the contents of `trunk/` with a clone of the tag you created in step 2.
+        1. `git clone https://github.com/rollbar/rollbar-php-wordpress.git trunk/`
+        2. `git checkout tags/[version number]`
+        3. `rm -Rf trunk/.git`
+        4. `svn commit -m"Sync with GitHub repo"`
+    3. Create the Subversion tag: `svn copy https://plugins.svn.wordpress.org/rollbar/trunk https://plugins.svn.wordpress.org/rollbar/tags/[version number] -m"Tag [version number]"`.
 
 ## Disclaimer
 
