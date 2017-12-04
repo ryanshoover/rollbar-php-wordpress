@@ -113,6 +113,7 @@ Yes. It's actually the recommended method of installation.
 * Added tests for logging level.
 * Set up a PHPUnit test suite.
 * Add rollbar_js_config filter for JS config data customization.
+* Updated dependencies.
 
 = Version 2.1.2 (11th October 2017) =
 * Use the default rest route instead of permalink /wp-json
@@ -157,6 +158,7 @@ Yes. It's actually the recommended method of installation.
 * Added tests for logging level.
 * Set up a PHPUnit test suite.
 * Add rollbar_js_config filter for JS config data customization.
+* Updated dependencies.
 
 = Version 2.1.2 (11th October 2017) =
 * Use the default rest route instead of permalink /wp-json
