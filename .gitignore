@@ -48,4 +48,3 @@ intermediate
 .idea
 cache
 deploy.sh
-vendor/*
