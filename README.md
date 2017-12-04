@@ -136,13 +136,14 @@ This is only for contributors with committer access:
     5. Add and commit the changes you made to bump the plugin version: `git add readme.txt rollbar-php-wordpress.php && git commit -m"Bump version to [version number]"`
 2. Tag the new version from the `master` branch and push upstream with `git tag [version number] && git push --tags`.
 3. Update the WordPress Plugin Directory Subversion Repository.
-    1. Remove the contents of `trunk/` with `rm -Rf trunk/*`.
-    2. Update the contents of `trunk/` with a clone of the tag you created in step 2.
+    1. Fetch the latest contents of Subversion repo with `svn update`.
+    2. Remove the contents of `trunk/` with `rm -Rf trunk/*`.
+    3. Update the contents of `trunk/` with a clone of the tag you created in step 2.
         1. `git clone https://github.com/rollbar/rollbar-php-wordpress.git trunk/`
         2. `git checkout tags/[version number]`
         3. `rm -Rf trunk/.git`
         4. `svn commit -m"Sync with GitHub repo"`
-    3. Create the Subversion tag: `svn copy https://plugins.svn.wordpress.org/rollbar/trunk https://plugins.svn.wordpress.org/rollbar/tags/[version number] -m"Tag [version number]"`.
+    4. Create the Subversion tag: `svn copy https://plugins.svn.wordpress.org/rollbar/trunk https://plugins.svn.wordpress.org/rollbar/tags/[version number] -m"Tag [version number]"`.
 
 ## Disclaimer
 
