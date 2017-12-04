@@ -1,6 +1,8 @@
 <?php
 namespace Rollbar\Wordpress\Tests;
 
+use Rollbar\Payload\Level;
+
 /**
  * Class PluginTest
  *
@@ -38,7 +40,7 @@ class PluginTest extends BaseTestCase {
             $errorLevel, $errorMsg, "", ""
         );
         
-        $response = \Rollbar\Rollbar::error($errorWrapper);
+        $response = $logger->log(Level::ERROR, $errorWrapper);
         
         if ($shouldIgnore) {
             $this->assertEquals("Ignored", $response->getInfo());
