@@ -3,7 +3,7 @@ Contributors: arturmoczulski
 Tags: rollbar, full stack, error, tracking, error tracking, error reporting, reporting, debug
 Requires at least: 3.5.1
 Tested up to: 4.8.2
-Stable tag: 2.1.2
+Stable tag: 2.2.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -106,6 +106,14 @@ Yes. It's actually the recommended method of installation.
 
 == Changelog ==
 
+= Version 2.2.0 (4th December 2017) =
+* Fixed the logging level to correctly inlude errors from specified level and up.
+* Changed the default logging level setting.
+* Added instructions on tagging the repo to the README.md file.
+* Added tests for logging level.
+* Set up a PHPUnit test suite.
+* Add rollbar_js_config filter for JS config data customization.
+
 = Version 2.1.2 (11th October 2017) =
 * Use the default rest route instead of permalink /wp-json
 * Dynamically build the Rollbar JS snippet URL
@@ -141,6 +149,14 @@ Yes. It's actually the recommended method of installation.
 * Initial release!
 
 == Upgrade Notice ==
+
+= Version 2.2.0 (4th December 2017) =
+* Fixed the logging level to correctly inlude errors from specified level and up.
+* Changed the default logging level setting.
+* Added instructions on tagging the repo to the README.md file.
+* Added tests for logging level.
+* Set up a PHPUnit test suite.
+* Add rollbar_js_config filter for JS config data customization.
 
 = Version 2.1.2 (11th October 2017) =
 * Use the default rest route instead of permalink /wp-json
