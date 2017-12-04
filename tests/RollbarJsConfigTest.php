@@ -4,9 +4,9 @@ namespace Rollbar\Wordpress\Tests;
 /**
  * Class RollbarJSConfigTest
  *
- * @package Rollbar
+ * @package Rollbar\Wordpress\Tests
  */
-class RollbarJSConfigTest extends \WP_UnitTestCase {
+class RollbarJSConfigTest extends BaseTestCase {
 
 	function testRollbarJsConfig() {
 		

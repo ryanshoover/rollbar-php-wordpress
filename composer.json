@@ -29,7 +29,8 @@
 
     "autoload": {
       "psr-4": {
-        "Rollbar\\Wordpress\\": "src/"
+        "Rollbar\\Wordpress\\": "src/",
+        "Rollbar\\Wordpress\\Tests\\": "tests/"
       }
     },
     "extra": {

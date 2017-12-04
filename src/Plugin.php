@@ -75,7 +75,7 @@ class Plugin {
             
             'logging_level' => (!empty($options['logging_level'])) ? 
                 esc_attr(trim($options['logging_level'])) : 
-                1024
+                Settings::DEFAULT_LOGGING_LEVEL
         );
         
         $this->settings = $settings;
@@ -146,6 +146,41 @@ class Plugin {
         \load_plugin_textdomain( 'rollbar', false, dirname( \plugin_basename( __FILE__  ) ) . '/languages/' );
     }
     
+    public static function buildIncludedErrno($cutoff)
+    {
+            
+        $levels = array(
+            E_ERROR,
+            E_WARNING,
+            E_PARSE,
+            E_NOTICE,
+            E_CORE_ERROR,
+            E_CORE_WARNING,
+            E_COMPILE_ERROR,
+            E_COMPILE_WARNING,
+            E_USER_ERROR,
+            E_USER_WARNING,
+            E_USER_NOTICE,
+            E_STRICT,
+            E_RECOVERABLE_ERROR,
+            E_DEPRECATED,
+            E_USER_DEPRECATED,
+            E_ALL
+        );
+        
+        $included_errno = 0;
+        
+        foreach ($levels as $level) {
+            
+            if ($level <= $cutoff) {
+                $included_errno |= $level;    
+            }
+            
+        }
+        
+        return $included_errno;
+    }
+    
     public function initPhpLogging()
     {
     
@@ -166,7 +201,7 @@ class Plugin {
             'environment' => $this->settings['environment'],
             // optional - path to directory your code is in. used for linking stack traces.
             'root' => ABSPATH,
-            'max_errno' => $this->settings['logging_level']
+            'included_errno' => self::buildIncludedErrno($this->settings['logging_level'])
         );
     
         // installs global error and exception handlers

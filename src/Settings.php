@@ -6,6 +6,8 @@ if (!defined('ABSPATH')) exit;
 
 class Settings
 {
+    const DEFAULT_LOGGING_LEVEL = E_ERROR;
+    
     private static $instance;
     
     private $options;
@@ -167,7 +169,7 @@ class Settings
 
     function loggingLevelRender()
     {
-        $logging_level = (!empty($this->options['logging_level'])) ? \esc_attr(trim($this->options['logging_level'])) : 1024;
+        $logging_level = (!empty($this->options['logging_level'])) ? \esc_attr(trim($this->options['logging_level'])) : self::DEFAULT_LOGGING_LEVEL;
 
         ?>
 
