@@ -96,6 +96,19 @@ class RollbarWPUser {
 }
 ```
 
+### `rollbar_plugin_settings` filter
+
+Allows you to manually adjust the settings of the plugin, in case you want to add additional processing after the settings get fetched from the database.
+
+```php
+function adjust_rollbar_settings($settings)
+{
+  ...
+}
+
+add_filter( 'rollbar_plugin_settings', 'adjust_rollbar_settings' );
+```
+
 ## Help / Support
 
 If you run into any issues, please email us at [support@rollbar.com](mailto:support@rollbar.com)
