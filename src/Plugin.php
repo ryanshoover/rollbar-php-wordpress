@@ -78,7 +78,7 @@ class Plugin {
                 Settings::DEFAULT_LOGGING_LEVEL
         );
         
-        $this->settings = $settings;
+        $this->settings = \apply_filters('rollbar_plugin_settings',$settings);
         
     }
     
