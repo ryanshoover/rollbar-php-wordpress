@@ -97,4 +97,39 @@ class PluginTest extends BaseTestCase {
         $this->assertEquals((E_ERROR | E_WARNING | E_PARSE | E_NOTICE), $result);
     }
     
+    public function testConfigure()
+    {
+        $expected = 'testConfigure';
+        
+        $plugin = \Rollbar\Wordpress\Plugin::instance();
+        
+        $plugin->setting('php_logging_enabled', 1);
+        $plugin->setting(
+            'logging_level',
+            \Rollbar\Wordpress\Plugin::buildIncludedErrno(E_WARNING)
+        );
+        $plugin->setting('server_side_access_token', $this->getAccessToken());
+        $plugin->setting('environment', $expected);
+        $plugin->configure(array('environment' => $expected));
+        
+        
+        $plugin->initPhpLogging();
+        
+        
+        $dataBuilder = \Rollbar\Rollbar::logger()->getDataBuilder();
+        $output = $dataBuilder->makeData(Level::ERROR, "testing", array());
+        
+        $this->assertEquals($expected, $output->getEnvironment());
+        
+        
+        $expected = "testConfigure2";
+        
+        $plugin->configure(array('environment' => $expected));
+        $dataBuilder = \Rollbar\Rollbar::logger()->getDataBuilder();
+        
+        $output = $dataBuilder->makeData(Level::ERROR, "testing", array());
+        
+        $this->assertEquals($expected, $output->getEnvironment());
+    }
+    
 }

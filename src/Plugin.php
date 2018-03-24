@@ -9,6 +9,8 @@ if( !defined( 'ABSPATH' ) ) exit;
 
 class Plugin {
     
+    private $config;
+    
     private static $instance;
     
     private $settings = null;
@@ -16,6 +18,8 @@ class Plugin {
     private function __construct() {
         
         $this->fetchSettings();
+        
+        $this->config = array();
         
     }
     
@@ -32,6 +36,14 @@ class Plugin {
     
     public static function load() {
         return Plugin::instance();
+    }
+    
+    public function configure(array $config) {
+        $this->config = array_merge($this->config, $config);
+        
+        if ($logger = \Rollbar\Rollbar::logger()) {
+            $logger->configure($this->config);
+        }
     }
     
     private function initSettings() {
