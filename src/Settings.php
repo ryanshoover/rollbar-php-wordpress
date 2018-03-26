@@ -264,6 +264,10 @@ class Settings
             ?>
             </div>
             
+            <?php
+            \submit_button();
+            ?>
+            
             <button 
                 type="button" 
                 class="button button-secondary"
@@ -282,7 +286,7 @@ class Settings
         
         $option_pos = stripos($readme, '<dt>' . $option);
         
-        if ($optionPos !== false) {
+        if ($option_pos !== false) {
         
             $desc_pos = stripos($readme, '<dd>', $option_pos) + strlen('<dd>');
             

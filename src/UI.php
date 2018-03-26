@@ -79,7 +79,7 @@ class UI
         ?>
         <div 
             id="rollbar_wp_<?php echo $name; ?>_editor"
-            style="height: 300px; width: 800px; "><?php echo \esc_attr(trim($value)); ?></div>
+            style="height: 300px;"><?php echo \esc_attr(trim($value)); ?></div>
         <script>
             var editor_<?php echo $name; ?> = ace.edit("rollbar_wp_<?php echo $name; ?>_editor");
             editor_<?php echo $name; ?>.setTheme("ace/theme/chrome");
