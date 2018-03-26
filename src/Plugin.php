@@ -90,6 +90,14 @@ class Plugin {
                 Settings::DEFAULT_LOGGING_LEVEL
         );
         
+        foreach (\Rollbar\Config::listOptions() as $option) {
+            
+            $settings[$option] = (!empty($options[$option])) ? 
+                esc_attr(trim($options[$option])) : 
+                '';
+                
+        }
+        
         $this->settings = \apply_filters('rollbar_plugin_settings',$settings);
         
     }
