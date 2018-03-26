@@ -144,7 +144,22 @@
                 failNotice("Skipped testing JS logging since it is disabled.");
             }
             
-        })
+        });
+        
+        jQuery('#rollbar_settings_advanced_header').click(function(target) {
+            
+            $section_advanced_fields = jQuery('#rollbar_settings_advanced');
+            $section_advanced_toggle = jQuery('#rollbar_settings_advanced_toggle');
+            
+            $section_advanced_fields.toggle();
+            
+            if ($section_advanced_fields.is(':visible')) {
+                $section_advanced_toggle.text('▼');
+            } else {
+                $section_advanced_toggle.text('►');
+            }
+            
+        });
         
     })
 })();
