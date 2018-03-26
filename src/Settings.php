@@ -136,9 +136,12 @@ class Settings
         }
         
         $this->addSetting(
-            'included_errno', 
+            'logging_level', 
             'rollbar_wp_general', 
-            array('options' => $human_friendly_errno_options)
+            array(
+                'type' => UI::SETTING_INPUT_TYPE_SELECTBOX,
+                'options' => $human_friendly_errno_options
+            )
         );
         
         // SECTION: Advanced
@@ -164,22 +167,18 @@ class Settings
         }
     }
     
-    private function addSetting($option, $section, array $overides = array())
+    private function addSetting($option, $section, array $overrides = array())
     {
-        $type = UI::getOptionType($option);
-        $options = UI::getOptionOptions($option);
+        $type = isset($overrides['type']) ? $overrides['type'] : UI::getOptionType($option);
+        $options = isset($overrides['options']) ? $overrides['options'] : UI::getOptionOptions($option);
         
-        $display_name = ucfirst(str_replace("_", " ", $option));
+        $display_name = isset($overrides['display_name']) ? $overrides['display_name'] : ucfirst(str_replace("_", " ", $option));
         
-        $description = Markdown::defaultTransform($this->parseOptionDetails($option));
+        $description = isset($overrides['description']) ? $overrides['description'] : Markdown::defaultTransform($this->parseOptionDetails($option));
         
         $value = (!empty($this->options[$option])) ? 
             \esc_attr(trim($this->options[$option])) : 
             null;
-            
-        foreach ($overides as $config => $value) {
-            $$config = $value;
-        }
         
         \add_settings_field(
             'rollbar_wp_' . $option,
