@@ -81,10 +81,6 @@ class Plugin {
                 trim($options['client_side_access_token']) : 
                 '',
             
-            'environment' => (!empty($options['environment'])) ? 
-                esc_attr(trim($options['environment'])) : 
-                '',
-            
             'logging_level' => (!empty($options['logging_level'])) ? 
                 esc_attr(trim($options['logging_level'])) : 
                 Settings::DEFAULT_LOGGING_LEVEL
@@ -92,9 +88,22 @@ class Plugin {
         
         foreach (\Rollbar\Config::listOptions() as $option) {
             
-            $settings[$option] = (!empty($options[$option])) ? 
-                esc_attr(trim($options[$option])) : 
-                '';
+            $value = $options[$option];
+            
+            if (!empty($value)) {
+                
+                if (is_string($value)) {
+                    $value = esc_attr(trim($value));
+                } else if (is_array($value)) {
+                    // TODO: convert array to PHP code
+                    $value = $value;
+                }
+                
+            } else {
+                $value = $this->getDefaultOption($option);
+            }
+            
+            $settings[$option] = $value;
                 
         }
         
@@ -260,6 +269,42 @@ class Plugin {
         $rollbarJsConfig = apply_filters('rollbar_js_config', $rollbarJsConfig);
         
         return $rollbarJsConfig;
+    }
+    
+    public function updateSettings(array $settings)
+    {
+        $option = get_option('rollbar_wp');
+        
+        $option = array_merge($option, $settings);
+        
+        foreach ($settings as $setting => $value) {
+            $this->settings[$setting] = $value;
+        }
+        
+        update_option('rollbar_wp', $option);
+    }
+    
+    public function restoreDefaults()
+    {
+        $settings = array();
+        
+        foreach (\Rollbar\Config::listOptions() as $option) {
+            $settings[$option] = $this->getDefaultOption($option);
+        }
+        
+        $this->updateSettings($settings);
+    }
+    
+    public function getDefaultOption($setting)
+    {
+        $defaults = \Rollbar\Defaults::get();
+        $method = lcfirst(str_replace('_', '', ucwords($setting, '_')));
+        
+        if (method_exists($defaults, $method)) {
+            return $defaults->$method();
+        }
+        
+        return null;
     }
 }
 

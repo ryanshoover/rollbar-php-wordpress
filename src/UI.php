@@ -193,7 +193,7 @@ class UI
         'base_api_url' => self::SETTING_INPUT_TYPE_SKIP,
         'branch' => self::SETTING_INPUT_TYPE_TEXT,
         'capture_error_stacktraces' => self::SETTING_INPUT_TYPE_BOOLEAN,
-        'checkIgnore' => self::SETTING_INPUT_TYPE_PHP,
+        'check_ignore' => self::SETTING_INPUT_TYPE_PHP,
         'code_version' => self::SETTING_INPUT_TYPE_TEXT,
         'custom' => self::SETTING_INPUT_TYPE_PHP,
         'enable_utf8_sanitization' => self::SETTING_INPUT_TYPE_BOOLEAN,

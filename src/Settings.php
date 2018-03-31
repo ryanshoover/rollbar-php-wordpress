@@ -33,7 +33,6 @@ class Settings
         $instance = self::instance();
         \add_action('admin_menu', array(&$instance, 'addAdminMenu'));
         \add_action('admin_init', array(&$instance, 'addSettings'));
-        
         \add_action('admin_enqueue_scripts', function($hook) {
             
             if ($hook != 'settings_page_rollbar_wp') {
@@ -82,7 +81,17 @@ class Settings
             );
             \wp_enqueue_style('RollbarWordpressSettings');
         });
+        
+        \add_action('init', array(get_called_class(), 'registerSession'));
 
+        \add_action('admin_post_rollbar_wp_restore_defaults', array(get_called_class(), 'restoreDefaultsAction'));
+    }
+    
+    public static function registerSession()
+    {
+        if( !session_id() ) {
+            session_start();
+        }
     }
 
     function addAdminMenu()
@@ -252,7 +261,16 @@ class Settings
 
     function optionsPage()
     {
-
+        
+        if (isset($_SESSION['rollbar_wp_flash_message'])) {
+            ?>
+            <div class="<?php echo $_SESSION['rollbar_wp_flash_message']['type']; ?> notice is-dismissable">
+                <p><?php echo $_SESSION['rollbar_wp_flash_message']['message']; ?></p>
+            </div>
+            <?php
+            unset($_SESSION['rollbar_wp_flash_message']);
+        }
+        
         ?>
         <form action='options.php' method='post'>
 
@@ -267,16 +285,27 @@ class Settings
             <?php
             \submit_button();
             ?>
-            
-            <button 
-                type="button" 
-                class="button button-secondary"
-                name="test-logging"
-                id="rollbar_wp_test_logging">
-                Send test message to Rollbar
-            </button>
 
         </form>
+        
+        <form action="<?php echo esc_url( admin_url('admin-post.php') ); ?>" method="post">
+            <input type="hidden" name="action" value="rollbar_wp_restore_defaults" />
+            <input 
+                type="submit" 
+                class="button button-secondary"
+                name="restore-defaults"
+                id="rollbar_wp_restore_defaults"
+                value="Restore defaults"
+            />
+        </form>
+        
+        <button
+            type="button" 
+            class="button button-secondary"
+            name="test-logging"
+            id="rollbar_wp_test_logging">
+            Send test message to Rollbar
+        </button>
         <?php
     }
     
@@ -297,6 +326,38 @@ class Settings
         }
         
         return $desc;
+    }
+    
+    public function getDefaultSetting($setting)
+    {
+        $defaults = \Rollbar\Defaults::get();
+        $method = lcfirst(str_replace('_', '', ucwords($setting, '_')));
+        
+        if (method_exists($defaults, $method)) {
+            return $defaults->$method();
+        }
+        
+        return null;
+    }
+    
+    public static function restoreDefaultsAction()
+    {
+        \Rollbar\Wordpress\Plugin::instance()->restoreDefaults();
+        
+        self::flashRedirect(
+            "updated", 
+            __("Default Rollbar settings restored.", "rollbar")
+        );
+    }
+    
+    public static function flashRedirect($type, $message)
+    {
+        $_SESSION['rollbar_wp_flash_message'] = array(
+            "type" => $type,
+            "message" => $message
+        );
+        
+        wp_redirect(admin_url('/options-general.php?page=rollbar_wp'));
     }
 }
 
