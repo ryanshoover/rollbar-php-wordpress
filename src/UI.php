@@ -9,32 +9,55 @@ class UI
     {
         extract($args);
         
-        switch ($type) {
-            case self::SETTING_INPUT_TYPE_TEXT:
-                self::textInput($name, $value, $description);
-                break;
-            case self::SETTING_INPUT_TYPE_BOOLEAN:
-                self::boolean($name, $value, $description, $display_name);
-                break;
-            case self::SETTING_INPUT_TYPE_PHP:
-                self::phpEditor($name, $value, $description);
-                break;
-            case self::SETTING_INPUT_TYPE_SELECTBOX:
-                self::select($name, $options, $value, $description);
-                break;
-        }
-    }
-    
-    public static function select($name, $options, $selected, $description)
-    {
         if (!empty($description)) {
-            ?>
-            <p>
-                <?php _e($description, 'rollbar-wp'); ?>
-            </p>
-            <?php
+            self::description($description);
         }
         
+        switch ($type) {
+            case self::SETTING_INPUT_TYPE_TEXT:
+                self::textInput($name, $value);
+                break;
+            case self::SETTING_INPUT_TYPE_BOOLEAN:
+                self::boolean($name, $value, $display_name);
+                break;
+            case self::SETTING_INPUT_TYPE_PHP:
+                self::phpEditor($name, $value);
+                break;
+            case self::SETTING_INPUT_TYPE_SELECTBOX:
+                self::select($name, $options, $value);
+                break;
+        }
+        
+        self::restoreDefault($name, $type, $default);
+    }
+    
+    public static function restoreDefault($setting, $type, $default)
+    {
+        ?>
+        <br />
+        <button
+            type="button" 
+            class="button button-secondary rollbar_wp_restore_default"
+            name="restore-default"
+            data-setting="<?php echo $setting; ?>"
+            data-setting-input-type="<?php echo $type; ?>">
+            Reset
+            <input type="hidden" class="default_value" value="<?php echo $default; ?>" />
+        </button>
+        <?php
+    }
+    
+    public static function description($description)
+    {
+        ?>
+        <p>
+            <?php _e($description, 'rollbar-wp'); ?>
+        </p>
+        <?php
+    }
+    
+    public static function select($name, $options, $selected)
+    {
         ?>
         <select name="rollbar_wp[<?php echo $name; ?>]" id="rollbar_wp_<?php echo $name; ?>">
             <?php
@@ -51,52 +74,37 @@ class UI
         <?php
     }
     
-    public static function textInput($name, $value, $description)
+    public static function textInput($name, $value)
     {
-        if (!empty($description)) {
-            ?>
-            <p>
-                <?php _e($description, 'rollbar-wp'); ?>
-            </p>
-            <?php
-        }
         ?>
         <input type='text' name='rollbar_wp[<?php echo $name; ?>]' id="rollbar_wp_<?php echo $name; ?>"
-               value='<?php echo \esc_attr(trim($value)); ?>' style="width: 300px;">
-        
+               value='<?php echo $value; ?>' style="width: 300px;">
         <?php
     }
     
-    public static function phpEditor($name, $value, $description)
+    public static function phpEditor($name, $value)
     {
-        if (!empty($description)) {
-            ?>
-            <p>
-                <?php _e($description, 'rollbar-wp'); ?>
-            </p>
-            <?php
-        }
         ?>
         <div 
             id="rollbar_wp_<?php echo $name; ?>_editor"
-            style="height: 300px;"><?php echo \esc_attr(trim($value)); ?></div>
+            style="height: 300px;"><?php echo $value; ?></div>
         <script>
-            var editor_<?php echo $name; ?> = ace.edit("rollbar_wp_<?php echo $name; ?>_editor");
-            editor_<?php echo $name; ?>.setTheme("ace/theme/chrome");
-            editor_<?php echo $name; ?>.session.setMode({path:"ace/mode/php", inline:true});
+            (function() {
+                
+                window['rollbar_wp']['settings_page']['<?php echo $name; ?>'] = {};
+                
+                window['rollbar_wp']['settings_page']['<?php echo $name; ?>']['editor'] = editor = ace.edit("rollbar_wp_<?php echo $name; ?>_editor");
+                
+                editor.setTheme("ace/theme/chrome");
+                editor.session.setMode({path:"ace/mode/php", inline:true});
+                
+            })();
         </script>
         <?php
     }
     
-    public static function boolean($name, $value, $description = '', $display_name = '')
+    public static function boolean($name, $value, $display_name = '')
     {
-        if (!empty($description)) {
-            ?>
-            <p>
-                <?php _e($description, 'rollbar-wp'); ?>
-            </p>
-            <?php
-        }
         $display_name = $display_name ? $display_name : ucfirst(str_replace("_", " ", $name));
         ?>
         <input type='checkbox' name='rollbar_wp[<?php echo $name; ?>]'
@@ -107,33 +115,74 @@ class UI
         <?php
     }
     
-    public static function getOptionType($option)
+    public static function flashMessage()
     {
-        if (!isset(self::$option_value_types[$option])) {
-            throw new \Exception(
-                'Configuration option ' . 
-                $option . ' doesn\'t exist in Rollbar.'
-            );
-        }
-        
-        if (is_array(self::$option_value_types[$option])) {
-            return self::$option_value_types[$option]['type'];
-        } else {
-            return self::$option_value_types[$option];   
+        if (isset($_SESSION['rollbar_wp_flash_message'])) {
+            ?>
+            <div class="<?php echo $_SESSION['rollbar_wp_flash_message']['type']; ?> notice is-dismissable">
+                <p><?php echo $_SESSION['rollbar_wp_flash_message']['message']; ?></p>
+            </div>
+            <?php
+            unset($_SESSION['rollbar_wp_flash_message']);
         }
     }
     
-    public static function getOptionOptions($option)
+    public static function restoreAllDefaultsButton()
     {
-        if (!isset(self::$option_value_types[$option])) {
+        ?>
+        <form action="<?php echo esc_url( admin_url('admin-post.php') ); ?>" method="post">
+            <input type="hidden" name="action" value="rollbar_wp_restore_defaults" />
+            <input 
+                type="submit" 
+                class="button button-secondary"
+                name="restore-all-defaults"
+                id="rollbar_wp_restore_all_defaults"
+                value="Restore all defaults"
+            />
+        </form>
+        <?php
+    }
+    
+    public static function testButton()
+    {
+        ?>
+        <button
+            type="button" 
+            class="button button-secondary"
+            name="test-logging"
+            id="rollbar_wp_test_logging">
+            Send test message to Rollbar
+        </button>
+        <?php
+    }
+    
+    public static function getSettingType($setting)
+    {
+        if (!isset(self::$setting_value_types[$setting])) {
             throw new \Exception(
                 'Configuration option ' . 
                 $option . ' doesn\'t exist in Rollbar.'
             );
         }
         
-        if (is_array(self::$option_value_types[$option])) {
-            return self::$option_value_types[$option]['options'];
+        if (is_array(self::$setting_value_types[$setting])) {
+            return self::$setting_value_types[$setting]['type'];
+        } else {
+            return self::$setting_value_types[$setting];   
+        }
+    }
+    
+    public static function getSettingOptions($setting)
+    {
+        if (!isset(self::$setting_value_types[$setting])) {
+            throw new \Exception(
+                'Configuration option ' . 
+                $setting . ' doesn\'t exist in Rollbar.'
+            );
+        }
+        
+        if (is_array(self::$setting_value_types[$setting])) {
+            return self::$setting_value_types[$setting]['options'];
         }
         
         return array();
@@ -183,9 +232,8 @@ class UI
     const SETTING_INPUT_TYPE_BOOLEAN = 'SETTING_INPUT_TYPE_BOOLEAN';
     const SETTING_INPUT_TYPE_SKIP = 'SETTING_INPUT_TYPE_SKIP';
     const SETTING_INPUT_TYPE_SELECTBOX = 'SETTING_INPUT_TYPE_SELECTBOX';
-    const SETTING_INPUT_TYPE_CHECKBOXES = 'SETTING_INPUT_TYPE_CHECKBOXES';
     
-    private static $option_value_types = array(
+    private static $setting_value_types = array(
         'access_token' => self::SETTING_INPUT_TYPE_TEXT,
         'agent_log_location' => self::SETTING_INPUT_TYPE_TEXT,
         'allow_exec' => self::SETTING_INPUT_TYPE_BOOLEAN,
@@ -206,7 +254,11 @@ class UI
         'fluent_tag' => self::SETTING_INPUT_TYPE_TEXT,
         'handler' => array(
             'type' => self::SETTING_INPUT_TYPE_SELECTBOX,
-            'options' => array('blocking', 'agent', 'fluent')
+            'options' => array(
+                'blocking' => 'blocking', 
+                'agent' => 'agent', 
+                'fluent' => 'fluent'
+            )
         ),
         'host' => self::SETTING_INPUT_TYPE_TEXT,
         'include_error_code_context' => self::SETTING_INPUT_TYPE_BOOLEAN,

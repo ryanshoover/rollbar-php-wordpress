@@ -12,12 +12,10 @@ class Settings
     
     private static $instance;
     
-    private $documentation = null;
-    
-    private $options;
+    private $plugin;
 
     private function __construct() {
-        $this->options = \get_option('rollbar_wp');
+        $this->plugin = \Rollbar\Wordpress\Plugin::instance();
     }
     
     public static function instance()
@@ -138,7 +136,7 @@ class Settings
 
         $this->addSetting('environment', 'rollbar_wp_general');
         
-        $included_errno_options = UI::getOptionOptions('included_errno');
+        $included_errno_options = UI::getSettingOptions('included_errno');
         $human_friendly_errno_options = array();
         foreach ($included_errno_options as $included_errno) {
             $human_friendly_errno_options[$included_errno] = UI::getIncludedErrnoDescriptions($included_errno);
@@ -149,7 +147,8 @@ class Settings
             'rollbar_wp_general', 
             array(
                 'type' => UI::SETTING_INPUT_TYPE_SELECTBOX,
-                'options' => $human_friendly_errno_options
+                'options' => $human_friendly_errno_options,
+                'default' => E_ERROR
             )
         );
         
@@ -176,35 +175,68 @@ class Settings
         }
     }
     
-    private function addSetting($option, $section, array $overrides = array())
+    private function addSetting($setting, $section, array $overrides = array())
     {
-        $type = isset($overrides['type']) ? $overrides['type'] : UI::getOptionType($option);
-        $options = isset($overrides['options']) ? $overrides['options'] : UI::getOptionOptions($option);
+        $type = isset($overrides['type']) ? 
+            $overrides['type'] : 
+            UI::getSettingType($setting);
+            
+        $options = isset($overrides['options']) ? 
+            $overrides['options'] : 
+            UI::getSettingOptions($setting);
         
-        $display_name = isset($overrides['display_name']) ? $overrides['display_name'] : ucfirst(str_replace("_", " ", $option));
+        $display_name = isset($overrides['display_name']) ? 
+            $overrides['display_name'] : 
+            ucfirst(str_replace("_", " ", $setting));
         
-        $description = isset($overrides['description']) ? $overrides['description'] : Markdown::defaultTransform($this->parseOptionDetails($option));
+        $description = isset($overrides['description']) ? 
+            $overrides['description'] : 
+            Markdown::defaultTransform($this->parseOptionDetails($setting));
+            
+        $default = isset($overrides['default']) ? 
+            $overrides['default'] : 
+            $this->settingDefault($setting);
         
-        $value = (!empty($this->options[$option])) ? 
-            \esc_attr(trim($this->options[$option])) : 
-            null;
+        $value = $this->setting($setting);
         
         \add_settings_field(
-            'rollbar_wp_' . $option,
+            'rollbar_wp_' . $setting,
             __($display_name, 'rollbar'),
             array('Rollbar\Wordpress\UI', 'setting'),
             'rollbar_wp',
             $section,
             array(
-                'label_for' => 'rollbar_wp_' . $option,
-                'name' => $option,
+                'label_for' => 'rollbar_wp_' . $setting,
+                'name' => $setting,
                 'display_name' => $display_name,
                 'value' => $value,
                 'description' => $description,
                 'type' => $type,
-                'options' => $options
+                'options' => $options,
+                'default' => $default
             )
         );
+    }
+    
+    private function setting($setting)
+    {
+        return $this->settingToString($this->plugin->setting($setting));
+    }
+    
+    private function settingToString($value)
+    {
+        if (is_string($value)) {
+            $value = esc_attr(trim($value));
+        } else if (is_array($value)) {
+            $value = var_export($value, true);
+        }
+        
+        return $value;
+    }
+    
+    private function settingDefault($setting)
+    {
+        return $this->settingToString($this->plugin->getDefaultOption($setting));
     }
     
     public function advancedSectionHeader()
@@ -223,35 +255,27 @@ class Settings
 
     public function statusRender()
     {
-        $php_logging_enabled = (!empty($this->options['php_logging_enabled'])) ? 1 : 0;
-        $js_logging_enabled = (!empty($this->options['js_logging_enabled'])) ? 1 : 0;
+        $php_logging_enabled = (!empty($this->plugin->setting('php_logging_enabled'))) ? 1 : 0;
+        $js_logging_enabled = (!empty($this->plugin->setting('js_logging_enabled'))) ? 1 : 0;
         
-        UI::boolean('php_logging_enabled', $php_logging_enabled, null, 'PHP logging enabled');
+        UI::boolean('php_logging_enabled', $php_logging_enabled, 'PHP logging enabled');
         ?>&nbsp;<?php
-        UI::boolean('js_logging_enabled', $js_logging_enabled, null,'JS logging enabled');
+        UI::boolean('js_logging_enabled', $js_logging_enabled, 'JS logging enabled');
     }
 
     function accessTokenRender()
     {
-        $client_side_access_token = (!empty($this->options['client_side_access_token'])) ? \esc_attr(trim($this->options['client_side_access_token'])) : null;
-        $server_side_access_token = (!empty($this->options['server_side_access_token'])) ? \esc_attr(trim($this->options['server_side_access_token'])) : null;
+        $client_side_access_token = $this->plugin->setting('client_side_access_token');
+        $server_side_access_token = $this->plugin->setting('server_side_access_token');
 
         ?>
         <h4 style="margin: 5px 0;"><?php \_e('Client Side Access Token', 'rollbar-wp'); ?> <small>(post_client_item)</small></h4>
         <?php
-        UI::setting(array(
-            'name' => 'client_side_access_token', 
-            'value' => $client_side_access_token,
-            'type' => UI::SETTING_INPUT_TYPE_TEXT
-        ));
+        UI::textInput('client_side_access_token', $client_side_access_token);
         ?>
         <h4 style="margin: 15px 0 5px 0;"><?php \_e('Server Side Access Token', 'rollbar-wp'); ?> <small>(post_server_item)</small></h4>
         <?php
-        UI::setting(array(
-            'name' => 'server_side_access_token', 
-            'value' => $server_side_access_token,
-            'type' => UI::SETTING_INPUT_TYPE_TEXT
-        ));
+        UI::textInput('server_side_access_token', $server_side_access_token);
         ?>     
         <p>
             <small><?php \_e('You can find your access tokens under your project settings: <strong>Project Access Tokens</strong>.', 'rollbar-wp'); ?></small>
@@ -262,14 +286,7 @@ class Settings
     function optionsPage()
     {
         
-        if (isset($_SESSION['rollbar_wp_flash_message'])) {
-            ?>
-            <div class="<?php echo $_SESSION['rollbar_wp_flash_message']['type']; ?> notice is-dismissable">
-                <p><?php echo $_SESSION['rollbar_wp_flash_message']['message']; ?></p>
-            </div>
-            <?php
-            unset($_SESSION['rollbar_wp_flash_message']);
-        }
+        UI::flashMessage();
         
         ?>
         <form action='options.php' method='post'>
@@ -287,26 +304,10 @@ class Settings
             ?>
 
         </form>
-        
-        <form action="<?php echo esc_url( admin_url('admin-post.php') ); ?>" method="post">
-            <input type="hidden" name="action" value="rollbar_wp_restore_defaults" />
-            <input 
-                type="submit" 
-                class="button button-secondary"
-                name="restore-defaults"
-                id="rollbar_wp_restore_defaults"
-                value="Restore defaults"
-            />
-        </form>
-        
-        <button
-            type="button" 
-            class="button button-secondary"
-            name="test-logging"
-            id="rollbar_wp_test_logging">
-            Send test message to Rollbar
-        </button>
         <?php
+        
+        UI::restoreAllDefaultsButton();
+        UI::testButton();
     }
     
     private function parseOptionDetails($option)
@@ -326,18 +327,6 @@ class Settings
         }
         
         return $desc;
-    }
-    
-    public function getDefaultSetting($setting)
-    {
-        $defaults = \Rollbar\Defaults::get();
-        $method = lcfirst(str_replace('_', '', ucwords($setting, '_')));
-        
-        if (method_exists($defaults, $method)) {
-            return $defaults->$method();
-        }
-        
-        return null;
     }
     
     public static function restoreDefaultsAction()

@@ -88,19 +88,10 @@ class Plugin {
         
         foreach (\Rollbar\Config::listOptions() as $option) {
             
-            $value = $options[$option];
-            
-            if (!empty($value)) {
-                
-                if (is_string($value)) {
-                    $value = esc_attr(trim($value));
-                } else if (is_array($value)) {
-                    // TODO: convert array to PHP code
-                    $value = $value;
-                }
-                
-            } else {
+            if (!isset($options[$option])) {
                 $value = $this->getDefaultOption($option);
+            } else {
+                $value = $options[$option];
             }
             
             $settings[$option] = $value;
@@ -111,10 +102,18 @@ class Plugin {
         
     }
     
-    public function setting($setting, $value) {
-    
-        $this->settings[$setting] = $value;
+    public function setting() {
+        $args = func_get_args();
+        $setting = $args[0];
+        if (isset($args[1])) {
+            $value = $args[1];
+        }
         
+        if (isset($value)) {
+            $this->settings[$setting] = $value;
+        } else {
+            return $this->settings[$setting];
+        }
     }
 
     private function hooks() {
@@ -299,6 +298,13 @@ class Plugin {
     {
         $defaults = \Rollbar\Defaults::get();
         $method = lcfirst(str_replace('_', '', ucwords($setting, '_')));
+            
+        // Handle the "branch" exception
+        switch($method) {
+            case "branch":
+                $method = "gitBranch";
+                break;
+        }
         
         if (method_exists($defaults, $method)) {
             return $defaults->$method();

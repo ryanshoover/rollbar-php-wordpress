@@ -1,5 +1,10 @@
 // RollbarWordpressSettings.js
 (function() {
+    
+    var rollbar_wp = window['rollbar_wp'] = {
+        'settings_page': {}
+    };
+    
     jQuery(function() {
         
         var clearNotices = function() {
@@ -148,8 +153,8 @@
         
         jQuery('#rollbar_settings_advanced_header').click(function(target) {
             
-            $section_advanced_fields = jQuery('#rollbar_settings_advanced');
-            $section_advanced_toggle = jQuery('#rollbar_settings_advanced_toggle');
+            var $section_advanced_fields = jQuery('#rollbar_settings_advanced'),
+                $section_advanced_toggle = jQuery('#rollbar_settings_advanced_toggle');
             
             $section_advanced_fields.toggle();
             
@@ -157,6 +162,28 @@
                 $section_advanced_toggle.text('▼');
             } else {
                 $section_advanced_toggle.text('►');
+            }
+            
+        });
+        
+        jQuery(".rollbar_wp_restore_default").click(function(event) {
+            
+            var $button = jQuery(event.target),
+                setting = $button.attr('data-setting'),
+                defaultValue = $button.find(".default_value").val(),
+                type = $button.attr("data-setting-input-type");
+            
+            switch (type) {
+                case "SETTING_INPUT_TYPE_PHP":
+                    rollbar_wp['settings_page'][setting]['editor'].setValue(defaultValue);
+                    break;
+                case "SETTING_INPUT_TYPE_BOOLEAN":
+                    $settingInput = jQuery('#rollbar_wp_' + setting);
+                    $settingInput.prop("checked", defaultValue);
+                    break;
+                default:
+                    $settingInput = jQuery('#rollbar_wp_' + setting);
+                    $settingInput.val(defaultValue);
             }
             
         });
