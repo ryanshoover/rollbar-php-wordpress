@@ -106,7 +106,13 @@ class Settings
 
     function addSettings()
     {
-        \register_setting('rollbar_wp', 'rollbar_wp');
+        \register_setting(
+            'rollbar_wp', 
+            'rollbar_wp'//,
+            // array(
+            //     'sanitize_callback' => array($this, 'sanitizeSettings')
+            // )
+        );
 
         // SECTION: General
         \add_settings_section(
@@ -348,6 +354,20 @@ class Settings
         
         wp_redirect(admin_url('/options-general.php?page=rollbar_wp'));
     }
+    
+    // public function sanitize($settings)
+    // {
+    //     foreach (\Rollbar\Wordpress\Sanitizer::sanitize($settings) as $error) {
+            
+    //         \add_settings_error(
+    //             $error['setting'],
+    //             \esc_attr($error['code']),
+    //             $error['message'],
+    //             $error['type']
+    //         );
+            
+    //     }
+    // }
 }
 
 ?>

@@ -127,6 +127,36 @@ class UI
         }
     }
     
+    public static function pluginMisconfiguredNotice()
+    {
+        ?>
+        <div class="notice notice-error is-dismissible">
+            <p>
+                <?php _e( 'Rollbar is misconfigured. Please, fix your configuration here: ', 'rollbar-wp' ); ?>
+                <a href="<?php echo admin_url('/options-general.php?page=rollbar_wp'); ?>">here</a>
+            </p>
+        </div>
+        <?php
+    }
+    
+    public static function serverSideAccessTokenMissing()
+    {
+        ?>
+        <div class="notice notice-error is-dismissible">
+            <p><?php _e( 'Rollbar PHP logging is enabled, but the Server Side Access Token has not been configured.', 'rollbar-wp' ); ?></p>
+        </div>
+        <?php
+    }
+    
+    public static function clientSideAccessTokenMissing()
+    {
+        ?>
+        <div class="notice notice-error is-dismissible">
+            <p><?php _e( 'Rollbar JS logging is enabled, but the Client Side Access Token has not been configured.', 'rollbar-wp' ); ?></p>
+        </div>
+        <?php
+    }
+    
     public static function restoreAllDefaultsButton()
     {
         ?>

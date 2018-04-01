@@ -57,9 +57,9 @@ class Plugin {
      */
     private function fetchSettings() {
         
-        $options = get_option( 'rollbar_wp' );
+        $options = get_option( 'rollbar_wp' ) ?: array();
         
-        if (empty($options['environment'])) {
+        if (!isset($options['environment']) || empty($options['environment'])) {
             
             if ($wpEnv = getenv('WP_ENV')) {
                 $options['environment'] = $wpEnv;
@@ -98,7 +98,7 @@ class Plugin {
                 
         }
         
-        $this->settings = \apply_filters('rollbar_plugin_settings',$settings);
+        $this->settings = \apply_filters('rollbar_plugin_settings', $settings);
         
     }
     
@@ -119,6 +119,7 @@ class Plugin {
     private function hooks() {
         \add_action('init', array(&$this, 'initPhpLogging'));
         \add_action('wp_head', array(&$this, 'initJsLogging'));
+        \add_action('admin_head', array(&$this, 'initJsLogging'));
         $this->registerTestEndpoint();
     }
     
@@ -211,15 +212,10 @@ class Plugin {
     
     public function initPhpLogging()
     {
-    
         // Return if logging is not enabled
         if ( $this->settings['php_logging_enabled'] === 0 ) {
             return;
         }
-    
-        // Return if access token is not set
-        if ($this->settings['server_side_access_token'] == '')
-            return;
     
         // Config
         $config = array(
@@ -233,21 +229,42 @@ class Plugin {
         );
     
         // installs global error and exception handlers
-        \Rollbar\Rollbar::init($config);
+        try {
+            
+            \Rollbar\Rollbar::init($config);
+            
+        } catch (\InvalidArgumentException $exception) {
+            
+            add_action(
+                'admin_notices', 
+                array(
+                    '\Rollbar\Wordpress\UI', 
+                    'pluginMisconfiguredNotice'
+                )
+            );
+            
+        }
         
     }
     
     public function initJsLogging()
     {
-        
         // Return if logging is not enabled
         if ( $this->settings['js_logging_enabled'] === 0 ) {
             return;
         }
     
         // Return if access token is not set
-        if ($this->settings['client_side_access_token'] == '')
+        if ($this->settings['client_side_access_token'] == '') {
+            add_action(
+                'admin_notices', 
+                array(
+                    '\Rollbar\Wordpress\UI', 
+                    'clientSideAccessTokenMissing'
+                )
+            );
             return;
+        }
         
         $rollbarJs = \Rollbar\RollbarJsHelper::buildJs($this->buildJsConfig());
         
@@ -313,5 +330,3 @@ class Plugin {
         return null;
     }
 }
-
-\add_action( 'plugins_loaded', '\Rollbar\Wordpress\Plugin::load' );
