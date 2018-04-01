@@ -189,9 +189,14 @@ class Settings
             $overrides['display_name'] : 
             ucfirst(str_replace("_", " ", $setting));
         
-        $description = isset($overrides['description']) ? 
-            $overrides['description'] : 
-            Markdown::defaultTransform($this->parseOptionDetails($setting));
+        if (isset($overrides['description'])) {
+            $description = $overrides['description'];
+        } else {
+            $description = $this->parseOptionDetails($setting);
+            $description = str_replace('```php', '```', $description);
+            $description = Markdown::defaultTransform($description);
+            $description = str_replace('```', '', $description);
+        }
             
         $default = isset($overrides['default']) ? 
             $overrides['default'] : 
