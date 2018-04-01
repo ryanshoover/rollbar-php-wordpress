@@ -108,10 +108,7 @@ class Settings
     {
         \register_setting(
             'rollbar_wp', 
-            'rollbar_wp'//,
-            // array(
-            //     'sanitize_callback' => array($this, 'sanitizeSettings')
-            // )
+            'rollbar_wp'
         );
 
         // SECTION: General
