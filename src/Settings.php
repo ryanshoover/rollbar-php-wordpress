@@ -323,20 +323,6 @@ class Settings
         
         wp_redirect(admin_url('/options-general.php?page=rollbar_wp'));
     }
-    
-    // public function sanitize($settings)
-    // {
-    //     foreach (\Rollbar\Wordpress\Sanitizer::sanitize($settings) as $error) {
-            
-    //         \add_settings_error(
-    //             $error['setting'],
-    //             \esc_attr($error['code']),
-    //             $error['message'],
-    //             $error['type']
-    //         );
-            
-    //     }
-    // }
 }
 
 ?>
