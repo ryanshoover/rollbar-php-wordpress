@@ -29,6 +29,11 @@ class ComposerStaticInit8f5a38266d0ca169e804342c8f403572
         array (
             'Psr\\Log\\' => 8,
         ),
+        'M' => 
+        array (
+            'Monolog\\' => 8,
+            'Michelf\\' => 8,
+        ),
         'D' => 
         array (
             'Doctrine\\Instantiator\\' => 22,
@@ -65,6 +70,14 @@ class ComposerStaticInit8f5a38266d0ca169e804342c8f403572
         'Psr\\Log\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
+        ),
+        'Monolog\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
+        ),
+        'Michelf\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/michelf/php-markdown/Michelf',
         ),
         'Doctrine\\Instantiator\\' => 
         array (

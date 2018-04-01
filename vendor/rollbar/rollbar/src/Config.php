@@ -2,6 +2,7 @@
 
 use Rollbar\Payload\Level;
 use Rollbar\Payload\Payload;
+use \Rollbar\Payload\EncodedPayload;
 
 if (!defined('ROLLBAR_INCLUDED_ERRNO_BITMASK')) {
     define(
@@ -13,6 +14,10 @@ if (!defined('ROLLBAR_INCLUDED_ERRNO_BITMASK')) {
 class Config
 {
     private $accessToken;
+    /**
+     * @var string $enabled Enable / disable Rollbar SDK.
+     */
+    private $enabled = true;
     /**
      * @var DataBuilder
      */
@@ -69,9 +74,17 @@ class Config
     
     /**
      * @var boolean Should debug_backtrace() data be sent with string messages
-     * sent through RollbarLogger::log()
+     * sent through RollbarLogger::log().
      */
     private $sendMessageTrace = false;
+    
+    /**
+     * @var string (One of the \Psr\Log\LogLevel constants) How much debugging
+     * info should be recorded in the Rollbar debug log file.
+     * ($rollbarLogger->getDebugLogFile() => commonly /tmp/rollbar.debug.log.
+     * Default: Psr\Log\LogLevel::ERROR
+     */
+    private $verbosity = \Psr\Log\LogLevel::ERROR;
 
     public function __construct(array $configArray)
     {
@@ -123,6 +136,7 @@ class Config
     {
         $this->configArray = $config;
 
+        $this->setEnabled($config);
         $this->setAccessToken($config);
         $this->setDataBuilder($config);
         $this->setTransformer($config);
@@ -137,6 +151,7 @@ class Config
         $this->setResponseHandler($config);
         $this->setCheckIgnoreFunction($config);
         $this->setSendMessageTrace($config);
+        $this->setVerbosity($config);
 
         if (isset($config['included_errno'])) {
             $this->included_errno = $config['included_errno'];
@@ -154,6 +169,25 @@ class Config
         }
         $this->utilities->validateString($config['access_token'], "config['access_token']", 32, false);
         $this->accessToken = $config['access_token'];
+    }
+
+    private function setEnabled($config)
+    {
+        if (array_key_exists('enabled', $config) && $config['enabled'] === false) {
+            $this->disable();
+        } else {
+            $this->enable();
+        }
+    }
+    
+    public function enable()
+    {
+        $this->enabled = true;
+    }
+    
+    public function disable()
+    {
+        $this->enabled = false;
     }
 
     private function setDataBuilder($config)
@@ -337,6 +371,20 @@ class Config
 
         $this->sendMessageTrace = $config['send_message_trace'];
     }
+    
+    private function setVerbosity($config)
+    {
+        if (!isset($config['verbosity'])) {
+            return;
+        }
+
+        $this->verbosity = $config['verbosity'];
+    }
+    
+    public function getVerbosity()
+    {
+        return $this->verbosity;
+    }
 
     /**
      * Allows setting up configuration options that might be specified by class
@@ -459,6 +507,16 @@ class Config
     public function getAccessToken()
     {
         return $this->accessToken;
+    }
+
+    public function enabled()
+    {
+        return $this->enabled === true;
+    }
+    
+    public function disabled()
+    {
+        return !$this->enabled();
     }
 
     public function getSendMessageTrace()
@@ -634,9 +692,9 @@ class Config
         return error_reporting() === 0 && !$this->reportSuppressed;
     }
 
-    public function send(&$scrubbedPayload, $accessToken)
+    public function send(EncodedPayload $payload, $accessToken)
     {
-        return $this->sender->send($scrubbedPayload, $accessToken);
+        return $this->sender->send($payload, $accessToken);
     }
 
     public function sendBatch(&$batch, $accessToken)

@@ -4,6 +4,7 @@ namespace Rollbar\Senders;
 
 use Fluent\Logger\FluentLogger;
 use Rollbar\Response;
+use Rollbar\Payload\EncodedPayload;
 
 class FluentSender implements SenderInterface
 {
@@ -58,14 +59,14 @@ class FluentSender implements SenderInterface
 
 
     /**
-     * @param $scrubbedPayload
+     * @param \Rollbar\Payload\EncodedPayload $scrubbedPayload
      * @param $accessToken
      * @return Response
      *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter) Unsued parameter is
      * intended here to comply to SenderInterface
      */
-    public function send($scrubbedPayload, $accessToken)
+    public function send(EncodedPayload $payload, $accessToken)
     {
         if (empty($this->fluentLogger)) {
             $this->loadFluentLogger();
@@ -102,5 +103,11 @@ class FluentSender implements SenderInterface
     protected function loadFluentLogger()
     {
         $this->fluentLogger = new FluentLogger($this->fluentHost, $this->fluentPort);
+    }
+    
+    public function toString()
+    {
+        return "fluentd " . $this->fluentHost . ":" . $this->fluentPort .
+                " tag: " . $this->fluentTag;
     }
 }

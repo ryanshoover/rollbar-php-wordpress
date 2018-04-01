@@ -9,7 +9,6 @@ use Rollbar\Payload\Message;
 use Rollbar\Payload\Payload;
 use Rollbar\RollbarLogger;
 
-
 use Rollbar\TestHelpers\Exceptions\SilentExceptionSampleRate;
 use Rollbar\TestHelpers\Exceptions\FiftyFiftyExceptionSampleRate;
 use Rollbar\TestHelpers\Exceptions\FiftyFityChildExceptionSampleRate;
@@ -34,6 +33,7 @@ class ConfigTest extends BaseRollbarTest
 
     public function tearDown()
     {
+        parent::tearDown();
         m::close();
     }
     
@@ -46,6 +46,22 @@ class ConfigTest extends BaseRollbarTest
             'environment' => $this->env
         ));
         $this->assertEquals($this->getTestAccessToken(), $config->getAccessToken());
+    }
+
+    public function testEnabled()
+    {
+        $config = new Config(array(
+            'access_token' => $this->getTestAccessToken(),
+            'environment' => $this->env
+        ));
+        $this->assertTrue($config->enabled());
+        
+        $config = new Config(array(
+            'access_token' => $this->getTestAccessToken(),
+            'environment' => $this->env,
+            'enabled' => false
+        ));
+        $this->assertFalse($config->enabled());
     }
 
     public function testAccessTokenFromEnvironment()
@@ -205,7 +221,7 @@ class ConfigTest extends BaseRollbarTest
 
     public function testSender()
     {
-        $p = m::mock("Rollbar\Payload\Payload");
+        $p = m::mock("Rollbar\Payload\EncodedPayload");
         $sender = m::mock("Rollbar\Senders\SenderInterface")
             ->shouldReceive("send")
             ->with($p, $this->getTestAccessToken())
@@ -231,6 +247,19 @@ class ConfigTest extends BaseRollbarTest
             "http://localhost/api/1/item/",
             $config->getSender()->getEndpoint()
         );
+    }
+    
+    public function testVerbosity()
+    {
+        $expected = 3;
+        
+        $config = new Config(array(
+            "access_token" => $this->getTestAccessToken(),
+            "environment" => $this->env,
+            "verbosity" => $expected
+        ));
+        
+        $this->assertEquals($expected, $config->getVerbosity());
     }
 
     public function testCustom()
