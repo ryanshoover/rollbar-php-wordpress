@@ -122,22 +122,19 @@ class Settings
             'rollbar_wp'
         );
 
-        // On/off
+        // On/off & tokens
         \add_settings_field(
             'rollbar_wp_status',
             __('Status', 'rollbar'),
-            array(&$this, 'statusRender'),
+            array('\Rollbar\Wordpress\UI', 'status'),
             'rollbar_wp',
-            'rollbar_wp_general'
-        );
-
-        // Token
-        \add_settings_field(
-            'rollbar_wp_access_token',
-            __('Access Token', 'rollbar'),
-            array(&$this, 'accessTokenRender'),
-            'rollbar_wp',
-            'rollbar_wp_general'
+            'rollbar_wp_general',
+            array(
+                'php_logging_enabled' => (!empty($this->plugin->setting('php_logging_enabled'))) ? 1 : 0,
+                'server_side_access_token' => $this->plugin->setting('server_side_access_token'),
+                'js_logging_enabled' => (!empty($this->plugin->setting('js_logging_enabled'))) ? 1 : 0,
+                'client_side_access_token' => $this->plugin->setting('client_side_access_token')
+            )
         );
 
         $this->addSetting('environment', 'rollbar_wp_general');
@@ -257,36 +254,6 @@ class Settings
         $output .=  "<div id='rollbar_settings_advanced' style='display:none;'>";
         
         echo $output;
-    }
-
-    public function statusRender()
-    {
-        $php_logging_enabled = (!empty($this->plugin->setting('php_logging_enabled'))) ? 1 : 0;
-        $js_logging_enabled = (!empty($this->plugin->setting('js_logging_enabled'))) ? 1 : 0;
-        
-        UI::boolean('php_logging_enabled', $php_logging_enabled, 'PHP logging enabled');
-        ?>&nbsp;<?php
-        UI::boolean('js_logging_enabled', $js_logging_enabled, 'JS logging enabled');
-    }
-
-    function accessTokenRender()
-    {
-        $client_side_access_token = $this->plugin->setting('client_side_access_token');
-        $server_side_access_token = $this->plugin->setting('server_side_access_token');
-
-        ?>
-        <h4 style="margin: 5px 0;"><?php \_e('Client Side Access Token', 'rollbar-wp'); ?> <small>(post_client_item)</small></h4>
-        <?php
-        UI::textInput('client_side_access_token', $client_side_access_token);
-        ?>
-        <h4 style="margin: 15px 0 5px 0;"><?php \_e('Server Side Access Token', 'rollbar-wp'); ?> <small>(post_server_item)</small></h4>
-        <?php
-        UI::textInput('server_side_access_token', $server_side_access_token);
-        ?>     
-        <p>
-            <small><?php \_e('You can find your access tokens under your project settings: <strong>Project Access Tokens</strong>.', 'rollbar-wp'); ?></small>
-        </p>
-        <?php
     }
 
     function optionsPage()

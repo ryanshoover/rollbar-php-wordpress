@@ -186,6 +186,36 @@ class UI
         <?php
     }
     
+    public function status($settings)
+    {
+        extract($settings);
+
+        self::boolean('php_logging_enabled', $php_logging_enabled, 'Turn on logging with PHP');
+        ?>
+        <div id="rollbar_wp_server_side_access_token_container" class="hidden">
+        <h4 style="margin: 15px 0 5px 0;"><?php \_e('Server Side Access Token', 'rollbar-wp'); ?> <small>(post_server_item)</small></h4>
+        <?php
+        self::textInput('server_side_access_token', $server_side_access_token);
+        ?>
+        </div>
+        <br />
+        <?php
+        
+        self::boolean('js_logging_enabled', $js_logging_enabled, 'Turn on logging with JavaScript (with rollbar.js)');
+        ?>
+        <div id="rollbar_wp_client_side_access_token_container" class="hidden">
+        <h4 style="margin: 5px 0;"><?php \_e('Client Side Access Token', 'rollbar-wp'); ?> <small>(post_client_item)</small></h4>
+        <?php
+        self::textInput('client_side_access_token', $client_side_access_token);
+        
+        ?>     
+        </div>
+        <p>
+            <small><?php \_e('You can find your access tokens under your project settings: <strong>Project Access Tokens</strong>.', 'rollbar-wp'); ?></small>
+        </p>
+        <?php
+    }
+    
     public static function getSettingType($setting)
     {
         if (!isset(self::$setting_value_types[$setting])) {
