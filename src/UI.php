@@ -108,7 +108,7 @@ class UI
         $display_name = $display_name ? $display_name : ucfirst(str_replace("_", " ", $name));
         ?>
         <input type='checkbox' name='rollbar_wp[<?php echo $name; ?>]'
-               id="rollbar_wp_<?php echo $name; ?>" <?php \checked($value, 1); ?> value='1'/>
+               id="rollbar_wp_<?php echo $name; ?>" <?php \checked($value, true, 1); ?> value='1'/>
         <label for="rollbar_wp_<?php echo $name; ?>">
             <?php \_e($display_name, 'rollbar-wp'); ?>
         </label>
@@ -284,6 +284,19 @@ class UI
         }
         
         return null;
+    }
+    
+    public static function booleanSettings()
+    {
+        $booleans = array();
+        
+        foreach (self::$setting_value_types as $setting => $value_type) {
+            if ($value_type == self::SETTING_INPUT_TYPE_BOOLEAN) {
+                $booleans []= $setting;
+            }
+        }
+        
+        return $booleans;
     }
     
     const SETTING_INPUT_TYPE_TEXT = 'SETTING_INPUT_TYPE_TEXT';

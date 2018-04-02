@@ -108,7 +108,10 @@ class Settings
     {
         \register_setting(
             'rollbar_wp', 
-            'rollbar_wp'
+            'rollbar_wp',
+            array(
+                'sanitize_callback' => array($this, 'sanitize')
+            )
         );
 
         // SECTION: General
@@ -322,6 +325,26 @@ class Settings
         );
         
         wp_redirect(admin_url('/options-general.php?page=rollbar_wp'));
+    }
+    
+    public static function sanitize($settings)
+    {
+        foreach (\Rollbar\Wordpress\UI::booleanSettings() as $setting) {
+            
+            if (!isset($settings[$setting])) {
+                $settings[$setting] = false;
+            }
+            
+        }
+        
+        if ((isset($settings['php_logging_enabled']) && $settings['php_logging_enabled']) || 
+            (isset($settings['js_logging_enabled']) && $settings['js_logging_enabled'])) {
+            $settings['enabled'] = true;       
+        } else {
+            $settings['enabled'] = false;
+        }
+        
+        return $settings;
     }
 }
 
