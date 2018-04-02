@@ -260,7 +260,7 @@ class Plugin {
                 'admin_notices', 
                 array(
                     '\Rollbar\Wordpress\UI', 
-                    'clientSideAccessTokenMissing'
+                    'pluginMisconfiguredNotice'
                 )
             );
             return;

@@ -137,7 +137,15 @@ class Settings
             )
         );
 
-        $this->addSetting('environment', 'rollbar_wp_general');
+        $envDescription = $this->parseSettingDescription('environment');
+        $envDescription .= UI::environmentSettingNote();
+        $this->addSetting(
+            'environment',
+            'rollbar_wp_general',
+            array(
+                'description' => $envDescription
+            )
+        );
         
         $included_errno_options = UI::getSettingOptions('included_errno');
         $human_friendly_errno_options = array();
@@ -195,10 +203,7 @@ class Settings
         if (isset($overrides['description'])) {
             $description = $overrides['description'];
         } else {
-            $description = $this->parseOptionDetails($setting);
-            $description = str_replace('```php', '```', $description);
-            $description = Markdown::defaultTransform($description);
-            $description = str_replace('```', '', $description);
+            $description = $this->parseSettingDescription($setting);
         }
             
         $default = isset($overrides['default']) ? 
@@ -288,7 +293,7 @@ class Settings
         UI::testButton();
     }
     
-    private function parseOptionDetails($option)
+    private function parseSettingDescription($option)
     {
         $readme = file_get_contents(__DIR__ . '/../vendor/rollbar/rollbar/README.md');
         
@@ -303,6 +308,10 @@ class Settings
             $desc = substr($readme, $desc_pos, $desc_close - $desc_pos);
             
         }
+        
+        $desc = str_replace('```php', '```', $desc);
+        $desc = Markdown::defaultTransform($desc);
+        $desc = str_replace('```', '', $desc);
         
         return $desc;
     }

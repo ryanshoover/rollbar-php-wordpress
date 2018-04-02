@@ -139,24 +139,6 @@ class UI
         <?php
     }
     
-    public static function serverSideAccessTokenMissing()
-    {
-        ?>
-        <div class="notice notice-error is-dismissible">
-            <p><?php _e( 'Rollbar PHP logging is enabled, but the Server Side Access Token has not been configured.', 'rollbar-wp' ); ?></p>
-        </div>
-        <?php
-    }
-    
-    public static function clientSideAccessTokenMissing()
-    {
-        ?>
-        <div class="notice notice-error is-dismissible">
-            <p><?php _e( 'Rollbar JS logging is enabled, but the Client Side Access Token has not been configured.', 'rollbar-wp' ); ?></p>
-        </div>
-        <?php
-    }
-    
     public static function restoreAllDefaultsButton()
     {
         ?>
@@ -214,6 +196,17 @@ class UI
             <small><?php \_e('You can find your access tokens under your project settings: <strong>Project Access Tokens</strong>.', 'rollbar-wp'); ?></small>
         </p>
         <?php
+    }
+    
+    public static function environmentSettingNote()
+    {
+        $output = 
+            '<p><code>WP_ENV</code> environment variable: <code> ' . getenv('WP_ENV') . ' </code></p>' .
+            '<p><small><strong>Rollbar for Wordpress honors the WP_ENV environment variable.</strong> ' .
+            'If the <code>environment</code> setting is not specified here, it will take ' .
+            'precendence over the default value.</strong></small></p>';
+        
+        return $output;
     }
     
     public static function getSettingType($setting)
