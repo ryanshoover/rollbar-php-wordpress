@@ -10,17 +10,12 @@ if( !defined( 'ABSPATH' ) ) exit;
 class Plugin {
     
     private $config;
-    
     private static $instance;
-    
     private $settings = null;
     
     private function __construct() {
-        
         $this->fetchSettings();
-        
         $this->config = array();
-        
     }
     
     public static function instance() {
@@ -217,25 +212,14 @@ class Plugin {
             return;
         }
     
-        // Config
-        $config = array(
-            // required
-            'access_token' => $this->settings['server_side_access_token'],
-            // optional - environment name. any string will do.
-            'environment' => $this->settings['environment'],
-            // optional - path to directory your code is in. used for linking stack traces.
-            'root' => ABSPATH,
-            'included_errno' => self::buildIncludedErrno($this->settings['logging_level'])
-        );
-    
         // installs global error and exception handlers
         try {
             
-            \Rollbar\Rollbar::init($config);
+            \Rollbar\Rollbar::init($this->buildPHPConfig());
             
         } catch (\InvalidArgumentException $exception) {
             
-            add_action(
+            \add_action(
                 'admin_notices', 
                 array(
                     '\Rollbar\Wordpress\UI', 
@@ -243,8 +227,25 @@ class Plugin {
                 )
             );
             
+            \add_settings_error(
+                'rollbar-php',
+                'rollbar-php',
+                'Rollbar PHP: ' . $exception->getMessage(),
+                'error'
+            );
+            
         }
         
+    }
+    
+    public function buildPHPConfig()
+    {
+        $config = $this->settings;
+        
+        $config['access_token'] = $this->settings['server_side_access_token'];
+        $config['included_errno'] = self::buildIncludedErrno($this->settings['logging_level']);
+        
+        return $config;
     }
     
     public function initJsLogging()
@@ -313,7 +314,6 @@ class Plugin {
     
     public function getDefaultOption($setting)
     {
-        $defaults = \Rollbar\Defaults::get();
         $method = lcfirst(str_replace('_', '', ucwords($setting, '_')));
             
         // Handle the "branch" exception
@@ -323,10 +323,18 @@ class Plugin {
                 break;
         }
         
-        if (method_exists($defaults, $method)) {
-            return $defaults->$method();
+        $rollbarDefaults = \Rollbar\Defaults::get();
+        $wordpressDefaults = \Rollbar\Wordpress\Defaults::instance();
+        $value = null;
+        
+        if (method_exists($wordpressDefaults, $method) && $value === null) {
+            $value = $wordpressDefaults->$method();
         }
         
-        return null;
+        if (method_exists($rollbarDefaults, $method) && $value === null) {
+            $value = $rollbarDefaults->$method();
+        }
+        
+        return $value;
     }
 }
