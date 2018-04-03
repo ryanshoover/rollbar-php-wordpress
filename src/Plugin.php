@@ -150,19 +150,37 @@ class Plugin {
         $plugin->settings['environment'] = $request->get_param("environment");
         $plugin->settings['logging_level'] = $request->get_param("logging_level");
         
+        $response = null;
+        
         try {
             $plugin->initPhpLogging();
             
-            \Rollbar\Rollbar::log(
+            $response = \Rollbar\Rollbar::log(
                 Level::INFO,
                 "Test message from Rollbar Wordpress plugin using PHP: ".
                 "integration with Wordpress successful"
             );
+            
         } catch( \Exception $exception ) {
-            return new \WP_REST_Response(array(), 500);   
+            
+            return new \WP_REST_Response(
+                array(
+                    'message' => $exception->getMessage()
+                ),  
+                500
+            );   
         }
         
-        return new \WP_REST_Response(array(), 200);
+        $info = $response->getInfo();
+        
+        $response = array('code' => $response->getStatus());
+        if (is_array($info)) {
+            $response = array_merge($response, $info);
+        } else {
+            $response['message'] = $info;
+        }
+        
+        return new \WP_REST_Response($response, 200);
         
     }
 
@@ -211,11 +229,13 @@ class Plugin {
         if ( $this->settings['php_logging_enabled'] === 0 ) {
             return;
         }
+        
+        $config = $this->buildPHPConfig();
     
         // installs global error and exception handlers
         try {
             
-            \Rollbar\Rollbar::init($this->buildPHPConfig());
+            \Rollbar\Rollbar::init($config);
             
         } catch (\InvalidArgumentException $exception) {
             
@@ -227,12 +247,23 @@ class Plugin {
                 )
             );
             
-            \add_settings_error(
-                'rollbar-php',
-                'rollbar-php',
-                'Rollbar PHP: ' . $exception->getMessage(),
-                'error'
-            );
+            global $wp_settings_errors;
+	        $wp_settings_errors[] = array(
+	                'setting' => 'rollbar-wp',
+	                'code'    => 'rollbar-wp',
+	                'message' => 'Rollbar PHP: ' . $exception->getMessage(),
+	                'type'    => 'error'
+	        );
+            
+        } catch (\Exception $exception) {
+            
+            global $wp_settings_errors;
+	        $wp_settings_errors[] = array(
+	                'setting' => 'rollbar-wp',
+	                'code'    => 'rollbar-wp',
+	                'message' => 'Rollbar PHP: ' . $exception->getMessage(),
+	                'type'    => 'error'
+	        );
             
         }
         
@@ -244,6 +275,7 @@ class Plugin {
         
         $config['access_token'] = $this->settings['server_side_access_token'];
         $config['included_errno'] = self::buildIncludedErrno($this->settings['logging_level']);
+        $config['timeout'] = intval($this->settings['timeout']);
         
         return $config;
     }

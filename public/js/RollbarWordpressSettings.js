@@ -73,10 +73,13 @@
                         'you\'re ready to go.'
                     );
                 },
-                phpFailNotice = function() {
+                phpFailNotice = function(response) {
                     failNotice(
-                        'There was a problem accessing Rollbar service using provided credentials '+
-                        'for PHP logging. Check your server side token.'
+                        'There was a problem accessing Rollbar service.' +
+                        '<p><code>' +
+                        'Code: ' + response.code + '<br />' +
+                        'Message: ' + response.message +
+                        '</pre></p>'
                     )
                 },
                 jsSuccessNotice = function() {
@@ -102,12 +105,16 @@
                         },
                         function(response) {
                             
-                            phpSuccessNotice();
+                            if (response.err || response.code == 0) {
+                                phpFailNotice(response);
+                            } else {
+                                phpSuccessNotice();
+                            }
                             
                         }
                     ).fail(function(response) {
                         
-                        phpFailNotice();
+                        phpFailNotice(response);
                         
                     });    
                 },
