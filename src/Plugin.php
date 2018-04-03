@@ -275,6 +275,16 @@ class Plugin {
         $config['included_errno'] = self::buildIncludedErrno($this->settings['logging_level']);
         $config['timeout'] = intval($this->settings['timeout']);
         
+        foreach (UI::settingsOfType(UI::SETTING_INPUT_TYPE_PHP) as $setting) {
+            
+            if (isset($config[$setting])) {
+                
+                $code = is_string($config[$setting]) ?: 'return ' . var_export($config[$setting], true) . ';';
+                
+                $config[$setting] = eval($code);
+            }
+        }
+        
         return $config;
     }
     

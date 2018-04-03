@@ -339,7 +339,7 @@ class Settings
     {
         // Empty checkboxes don't get propagated into the $_POST at all. Fill out
         // missing boolean settings as false.
-        foreach (\Rollbar\Wordpress\UI::booleanSettings() as $setting) {
+        foreach (UI::settingsOfType(UI::SETTING_INPUT_TYPE_BOOLEAN) as $setting) {
             
             if (!isset($settings[$setting])) {
                 $settings[$setting] = false;
@@ -352,7 +352,7 @@ class Settings
         // Don't store default values in the database. This is so that future updates
         // to default values in PHP SDK don't get stored in users databases.
         foreach ($settings as $setting_name => $setting_value) {
-            if ($setting_value == \Rollbar\Wordpress\Plugin::instance()->getDefaultOption($setting_name)) {
+            if ($setting_value == Plugin::instance()->getDefaultOption($setting_name)) {
                 unset($settings[$setting_name]);
             }
         }

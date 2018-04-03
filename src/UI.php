@@ -279,17 +279,17 @@ class UI
         return null;
     }
     
-    public static function booleanSettings()
+    public static function settingsOfType($type)
     {
-        $booleans = array();
+        $settings = array();
         
         foreach (self::$setting_value_types as $setting => $value_type) {
-            if ($value_type == self::SETTING_INPUT_TYPE_BOOLEAN) {
-                $booleans []= $setting;
+            if ($value_type == $type) {
+                $settings []= $setting;
             }
         }
         
-        return $booleans;
+        return $settings;   
     }
     
     const SETTING_INPUT_TYPE_TEXT = 'SETTING_INPUT_TYPE_TEXT';
