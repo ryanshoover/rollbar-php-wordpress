@@ -230,12 +230,10 @@ class Plugin {
             return;
         }
         
-        $config = $this->buildPHPConfig();
-    
         // installs global error and exception handlers
         try {
             
-            \Rollbar\Rollbar::init($config);
+            \Rollbar\Rollbar::init($this->buildPHPConfig());
             
         } catch (\InvalidArgumentException $exception) {
             
