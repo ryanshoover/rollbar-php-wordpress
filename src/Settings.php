@@ -246,7 +246,7 @@ class Settings
         return $value;
     }
     
-    private function settingDefault($setting)
+    public function settingDefault($setting)
     {
         return $this->settingToString($this->plugin->getDefaultOption($setting));
     }
