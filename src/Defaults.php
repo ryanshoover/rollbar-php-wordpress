@@ -26,6 +26,16 @@ class Defaults {
     {
         return ABSPATH;
     }
+    
+    public function loggingLevel()
+    {
+        return E_ERROR;
+    }
+    
+    public function enabled()
+    {
+        return false;
+    }
 }
 
 ?>

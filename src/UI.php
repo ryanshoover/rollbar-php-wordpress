@@ -300,6 +300,8 @@ class UI
     const SETTING_INPUT_TYPE_SELECTBOX = 'SETTING_INPUT_TYPE_SELECTBOX';
     
     private static $setting_value_types = array(
+        'php_logging_enabled' => self::SETTING_INPUT_TYPE_BOOLEAN,
+        'js_logging_enabled' => self::SETTING_INPUT_TYPE_BOOLEAN,
         'access_token' => self::SETTING_INPUT_TYPE_TEXT,
         'agent_log_location' => self::SETTING_INPUT_TYPE_TEXT,
         'allow_exec' => self::SETTING_INPUT_TYPE_BOOLEAN,

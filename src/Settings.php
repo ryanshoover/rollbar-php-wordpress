@@ -83,6 +83,8 @@ class Settings
         \add_action('init', array(get_called_class(), 'registerSession'));
 
         \add_action('admin_post_rollbar_wp_restore_defaults', array(get_called_class(), 'restoreDefaultsAction'));
+        
+        \add_action('pre_update_option_rollbar_wp', array(get_called_class(), 'preUpdate'));
     }
     
     public static function registerSession()
@@ -108,10 +110,7 @@ class Settings
     {
         \register_setting(
             'rollbar_wp', 
-            'rollbar_wp',
-            array(
-                'sanitize_callback' => array($this, 'sanitize')
-            )
+            'rollbar_wp'
         );
 
         // SECTION: General
@@ -336,8 +335,10 @@ class Settings
         wp_redirect(admin_url('/options-general.php?page=rollbar_wp'));
     }
     
-    public static function sanitize($settings)
+    public static function preUpdate($settings)
     {
+        // Empty checkboxes don't get propagated into the $_POST at all. Fill out
+        // missing boolean settings as false.
         foreach (\Rollbar\Wordpress\UI::booleanSettings() as $setting) {
             
             if (!isset($settings[$setting])) {
@@ -346,11 +347,14 @@ class Settings
             
         }
         
-        if ((isset($settings['php_logging_enabled']) && $settings['php_logging_enabled']) || 
-            (isset($settings['js_logging_enabled']) && $settings['js_logging_enabled'])) {
-            $settings['enabled'] = true;       
-        } else {
-            $settings['enabled'] = false;
+        $settings['enabled'] = isset($settings['php_logging_enabled']) && $settings['php_logging_enabled'];
+        
+        // Don't store default values in the database. This is so that future updates
+        // to default values in PHP SDK don't get stored in users databases.
+        foreach ($settings as $setting_name => $setting_value) {
+            if ($setting_value == \Rollbar\Wordpress\Plugin::instance()->getDefaultOption($setting_name)) {
+                unset($settings[$setting_name]);
+            }
         }
         
         return $settings;
