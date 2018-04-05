@@ -19,12 +19,12 @@ class DefaultsTest extends BaseTestCase {
     
     public function testRoot()
     {
-        $this->assertEquals(ABSPATH, $this->subject->root);
+        $this->assertEquals(ABSPATH, $this->subject->root());
     }
     
     public function testEnvironment()
     {
-        $this->assertEquals(getenv('WP_ENV'), $this->subject->environment);
+        $this->assertEquals(getenv('WP_ENV'), $this->subject->environment());
     }
     
 }
