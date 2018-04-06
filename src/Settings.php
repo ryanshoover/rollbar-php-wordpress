@@ -37,7 +37,12 @@ class Settings
                 return;
             }
             
-            \wp_register_script( 'RollbarWordpressSettings.js', \plugin_dir_url(__FILE__)."../public/js/RollbarWordpressSettings.js" );
+            \wp_register_script( 
+                'RollbarWordpressSettings.js', 
+                \plugin_dir_url(__FILE__)."../public/js/RollbarWordpressSettings.js",
+                array("jquery"),
+                Plugin::VERSION
+            );
             
             \wp_localize_script(
                 'RollbarWordpressSettings.js', 
@@ -51,10 +56,15 @@ class Settings
                 "RollbarWordpressSettings.js",
                 \plugin_dir_url(__FILE__)."../public/js/RollbarWordpressSettings.js", 
                 array("jquery"),
-                "2.0.1"
+                Plugin::VERSION
             );
             
-            \wp_register_script( 'AceEditor', \plugin_dir_url(__FILE__)."../public/js/ace-builds/src-min-noconflict/ace.js" );
+            \wp_register_script( 
+                'AceEditor', 
+                \plugin_dir_url(__FILE__)."../public/js/ace-builds/src-min-noconflict/ace.js",
+                array('jquery'),
+                Plugin::VERSION
+            );
             
             \wp_localize_script(
                 'AceEditor', 
@@ -68,14 +78,14 @@ class Settings
                 "AceEditor",
                 \plugin_dir_url(__FILE__)."../public/js/ace-builds/src-min-noconflict/ace.js", 
                 array("jquery"),
-                "2.0.1"
+                Plugin::VERSION
             );  
             
             \wp_register_style(
                 'RollbarWordpressSettings',
                 \plugin_dir_url(__FILE__)."../public/css/RollbarWordpressSettings.css",
                 false, 
-                '1.0.0'
+                Plugin::VERSION
             );
             \wp_enqueue_style('RollbarWordpressSettings');
         });
