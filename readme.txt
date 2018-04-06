@@ -3,7 +3,7 @@ Contributors: arturmoczulski
 Tags: rollbar, full stack, error, tracking, error tracking, error reporting, reporting, debug
 Requires at least: 3.5.1
 Tested up to: 4.8.2
-Stable tag: 2.2.0
+Stable tag: 2.3.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -154,6 +154,10 @@ Yes. It's actually the recommended method of installation.
 * Initial release!
 
 == Upgrade Notice ==
+
+= Version 2.3.0 (5th April 2018) =
+* Added `rollbar_plugin_settings` filter
+* Added majority of Rollbar PHP config options to the User Interface.
 
 = Version 2.2.0 (4th December 2017) =
 * Fixed the logging level to correctly inlude errors from specified level and up.
