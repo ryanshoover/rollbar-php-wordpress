@@ -95,14 +95,10 @@
                         'for JS logging. Check your client side token.'
                     )
                 },
-                logThroughPhp = function(server_side_access_token, environment, logging_level) {
+                logThroughPhp = function(config) {
                     jQuery.post(
                         "/index.php?rest_route=/rollbar/v1/test-php-logging",
-                        {
-                            "server_side_access_token": server_side_access_token,
-                            "environment": environment,
-                            "logging_level": logging_level
-                        },
+                        config,
                         function(response) {
                             
                             if (response.err || response.code == 0) {
@@ -162,6 +158,22 @@
                         }
                     );
                     
+                },
+                buildPHPConfig = function() {
+                    var config = {};
+                    
+                    jQuery("[id^=rollbar_wp_").each(function(i, element) {
+                       var setting_name = element.id.substring(("rollbar_wp_").length),
+                           $element = jQuery(element);
+                       
+                       if ($element.is(':checkbox')) {
+                           config[setting_name] = $element.prop('checked');
+                       } else {
+                           config[setting_name] = $element.val();
+                       }
+                    });
+                    
+                    return config;
                 };
                
             // Save references to jQuery elements for ease of use
@@ -172,17 +184,16 @@
             // Set event handlers
             jQuery("#rollbar_wp_test_logging").click(function() {
                 
-                var server_side_access_token = jQuery("#rollbar_wp_server_side_access_token").val(),
-                    client_side_access_token = jQuery("#rollbar_wp_client_side_access_token").val(),
+                var client_side_access_token = jQuery("#rollbar_wp_client_side_access_token").val(),
                     environment = jQuery("#rollbar_wp_environment").val(),
                     logging_level = jQuery("#rollbar_wp_logging_level").val(),
-                    php_logging_enabled = jQuery('#rollbar_wp_php_logging_enabled').prop('checked'),
-                    js_logging_enabled = jQuery('#rollbar_wp_js_logging_enabled').prop('checked');
+                    js_logging_enabled = jQuery('#rollbar_wp_js_logging_enabled').prop('checked'),
+                    php_config = buildPHPConfig();
                     
                 clearNotices();
                 
-                if (php_logging_enabled) {
-                    logThroughPhp(server_side_access_token, environment, logging_level);
+                if (php_config.php_logging_enabled) {
+                    logThroughPhp(php_config);
                 } else {
                     failNotice("Skipped testing PHP logging since it is disabled.");
                 }

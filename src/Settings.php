@@ -181,6 +181,11 @@ class Settings
                 continue;
             }
             
+            // TODO: https://github.com/rollbar/rollbar-php-wordpress/issues/41
+            if (UI::getSettingType($option) == UI::SETTING_INPUT_TYPE_PHP) {
+                continue;
+            }
+            
             $this->addSetting($option, 'rollbar_wp_advanced');
         }
     }

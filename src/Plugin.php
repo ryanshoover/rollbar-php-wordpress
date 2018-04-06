@@ -146,9 +146,9 @@ class Plugin {
         
         $plugin = self::instance();
         
-        $plugin->settings['server_side_access_token'] = $request->get_param("server_side_access_token");
-        $plugin->settings['environment'] = $request->get_param("environment");
-        $plugin->settings['logging_level'] = $request->get_param("logging_level");
+        foreach(\Rollbar\Config::listOptions() as $option) {
+            $plugin->settings[$option] = $request->get_param($option);
+        }
         
         $response = null;
         
