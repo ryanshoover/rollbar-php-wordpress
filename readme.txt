@@ -106,6 +106,10 @@ Yes. It's actually the recommended method of installation.
 
 == Changelog ==
 
+= Version 2.3.0 (5th April 2018) =
+* Added `rollbar_plugin_settings` filter
+* Added majority of Rollbar PHP config options to the User Interface.
+
 = Version 2.2.0 (4th December 2017) =
 * Fixed the logging level to correctly inlude errors from specified level and up.
 * Changed the default logging level setting.
