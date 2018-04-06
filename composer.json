@@ -42,7 +42,7 @@
     "scripts": {
         "test": [
             "@pre-test",
-            "phpunit"
+            "phpunit --coverage-clover build/logs/clover.xml"
         ],
         "pre-test": [
             "export $(cat phpunit.env | xargs) && bash bin/install-wp-tests.sh $WP_TEST_DB $WP_TEST_USER \"$WP_TEST_PASS\" $WP_TEST_HOST $WP_VERSION || true"
