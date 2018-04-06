@@ -10,17 +10,12 @@ if( !defined( 'ABSPATH' ) ) exit;
 class Plugin {
     
     private $config;
-    
     private static $instance;
-    
     private $settings = null;
     
     private function __construct() {
-        
         $this->fetchSettings();
-        
         $this->config = array();
-        
     }
     
     public static function instance() {
@@ -57,9 +52,9 @@ class Plugin {
      */
     private function fetchSettings() {
         
-        $options = get_option( 'rollbar_wp' );
+        $options = get_option( 'rollbar_wp' ) ?: array();
         
-        if (empty($options['environment'])) {
+        if (!isset($options['environment']) || empty($options['environment'])) {
             
             if ($wpEnv = getenv('WP_ENV')) {
                 $options['environment'] = $wpEnv;
@@ -81,28 +76,45 @@ class Plugin {
                 trim($options['client_side_access_token']) : 
                 '',
             
-            'environment' => (!empty($options['environment'])) ? 
-                esc_attr(trim($options['environment'])) : 
-                '',
-            
             'logging_level' => (!empty($options['logging_level'])) ? 
                 esc_attr(trim($options['logging_level'])) : 
                 Settings::DEFAULT_LOGGING_LEVEL
         );
         
-        $this->settings = \apply_filters('rollbar_plugin_settings',$settings);
+        foreach (\Rollbar\Config::listOptions() as $option) {
+            
+            if (!isset($options[$option])) {
+                $value = $this->getDefaultOption($option);
+            } else {
+                $value = $options[$option];
+            }
+            
+            $settings[$option] = $value;
+                
+        }
+        
+        $this->settings = \apply_filters('rollbar_plugin_settings', $settings);
         
     }
     
-    public function setting($setting, $value) {
-    
-        $this->settings[$setting] = $value;
+    public function setting() {
+        $args = func_get_args();
+        $setting = $args[0];
+        if (isset($args[1])) {
+            $value = $args[1];
+        }
         
+        if (isset($value)) {
+            $this->settings[$setting] = $value;
+        } else {
+            return $this->settings[$setting];
+        }
     }
 
     private function hooks() {
         \add_action('init', array(&$this, 'initPhpLogging'));
         \add_action('wp_head', array(&$this, 'initJsLogging'));
+        \add_action('admin_head', array(&$this, 'initJsLogging'));
         $this->registerTestEndpoint();
     }
     
@@ -134,23 +146,41 @@ class Plugin {
         
         $plugin = self::instance();
         
-        $plugin->settings['server_side_access_token'] = $request->get_param("server_side_access_token");
-        $plugin->settings['environment'] = $request->get_param("environment");
-        $plugin->settings['logging_level'] = $request->get_param("logging_level");
+        foreach(\Rollbar\Config::listOptions() as $option) {
+            $plugin->settings[$option] = $request->get_param($option);
+        }
+        
+        $response = null;
         
         try {
             $plugin->initPhpLogging();
             
-            \Rollbar\Rollbar::log(
+            $response = \Rollbar\Rollbar::log(
                 Level::INFO,
                 "Test message from Rollbar Wordpress plugin using PHP: ".
                 "integration with Wordpress successful"
             );
+            
         } catch( \Exception $exception ) {
-            return new \WP_REST_Response(array(), 500);   
+            
+            return new \WP_REST_Response(
+                array(
+                    'message' => $exception->getMessage()
+                ),  
+                500
+            );   
         }
         
-        return new \WP_REST_Response(array(), 200);
+        $info = $response->getInfo();
+        
+        $response = array('code' => $response->getStatus());
+        if (is_array($info)) {
+            $response = array_merge($response, $info);
+        } else {
+            $response['message'] = $info;
+        }
+        
+        return new \WP_REST_Response($response, 200);
         
     }
 
@@ -195,43 +225,87 @@ class Plugin {
     
     public function initPhpLogging()
     {
-    
         // Return if logging is not enabled
         if ( $this->settings['php_logging_enabled'] === 0 ) {
             return;
         }
-    
-        // Return if access token is not set
-        if ($this->settings['server_side_access_token'] == '')
-            return;
-    
-        // Config
-        $config = array(
-            // required
-            'access_token' => $this->settings['server_side_access_token'],
-            // optional - environment name. any string will do.
-            'environment' => $this->settings['environment'],
-            // optional - path to directory your code is in. used for linking stack traces.
-            'root' => ABSPATH,
-            'included_errno' => self::buildIncludedErrno($this->settings['logging_level'])
-        );
-    
-        // installs global error and exception handlers
-        \Rollbar\Rollbar::init($config);
         
+        // installs global error and exception handlers
+        try {
+            
+            \Rollbar\Rollbar::init($this->buildPHPConfig());
+            
+        } catch (\InvalidArgumentException $exception) {
+            
+            \add_action(
+                'admin_notices', 
+                array(
+                    '\Rollbar\Wordpress\UI', 
+                    'pluginMisconfiguredNotice'
+                )
+            );
+            
+            global $wp_settings_errors;
+	        $wp_settings_errors[] = array(
+	                'setting' => 'rollbar-wp',
+	                'code'    => 'rollbar-wp',
+	                'message' => 'Rollbar PHP: ' . $exception->getMessage(),
+	                'type'    => 'error'
+	        );
+            
+        } catch (\Exception $exception) {
+            
+            global $wp_settings_errors;
+	        $wp_settings_errors[] = array(
+	                'setting' => 'rollbar-wp',
+	                'code'    => 'rollbar-wp',
+	                'message' => 'Rollbar PHP: ' . $exception->getMessage(),
+	                'type'    => 'error'
+	        );
+            
+        }
+        
+    }
+    
+    public function buildPHPConfig()
+    {
+        $config = $this->settings;
+        
+        $config['access_token'] = $this->settings['server_side_access_token'];
+        $config['included_errno'] = self::buildIncludedErrno($this->settings['logging_level']);
+        $config['timeout'] = intval($this->settings['timeout']);
+        
+        foreach (UI::settingsOfType(UI::SETTING_INPUT_TYPE_PHP) as $setting) {
+            
+            if (isset($config[$setting])) {
+                
+                $code = is_string($config[$setting]) ?: 'return ' . var_export($config[$setting], true) . ';';
+                
+                $config[$setting] = eval($code);
+            }
+        }
+        
+        return $config;
     }
     
     public function initJsLogging()
     {
-        
         // Return if logging is not enabled
         if ( $this->settings['js_logging_enabled'] === 0 ) {
             return;
         }
     
         // Return if access token is not set
-        if ($this->settings['client_side_access_token'] == '')
+        if ($this->settings['client_side_access_token'] == '') {
+            add_action(
+                'admin_notices', 
+                array(
+                    '\Rollbar\Wordpress\UI', 
+                    'pluginMisconfiguredNotice'
+                )
+            );
             return;
+        }
         
         $rollbarJs = \Rollbar\RollbarJsHelper::buildJs($this->buildJsConfig());
         
@@ -253,6 +327,54 @@ class Plugin {
         
         return $rollbarJsConfig;
     }
+    
+    public function updateSettings(array $settings)
+    {
+        $option = get_option('rollbar_wp');
+        
+        $option = array_merge($option, $settings);
+        
+        foreach ($settings as $setting => $value) {
+            $this->settings[$setting] = $value;
+        }
+        
+        update_option('rollbar_wp', $option);
+    }
+    
+    public function restoreDefaults()
+    {
+        $settings = array();
+        
+        foreach (\Rollbar\Config::listOptions() as $option) {
+            $settings[$option] = $this->getDefaultOption($option);
+        }
+        
+        $this->updateSettings($settings);
+    }
+    
+    public function getDefaultOption($setting)
+    {
+        $method = lcfirst(str_replace('_', '', ucwords($setting, '_')));
+            
+        // Handle the "branch" exception
+        switch($method) {
+            case "branch":
+                $method = "gitBranch";
+                break;
+        }
+        
+        $rollbarDefaults = \Rollbar\Defaults::get();
+        $wordpressDefaults = \Rollbar\Wordpress\Defaults::instance();
+        $value = null;
+        
+        if (method_exists($wordpressDefaults, $method) && $value === null) {
+            $value = $wordpressDefaults->$method();
+        }
+        
+        if (method_exists($rollbarDefaults, $method) && $value === null) {
+            $value = $rollbarDefaults->$method();
+        }
+        
+        return $value;
+    }
 }
-
-\add_action( 'plugins_loaded', '\Rollbar\Wordpress\Plugin::load' );

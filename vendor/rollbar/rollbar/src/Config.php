@@ -2,6 +2,7 @@
 
 use Rollbar\Payload\Level;
 use Rollbar\Payload\Payload;
+use \Rollbar\Payload\EncodedPayload;
 
 if (!defined('ROLLBAR_INCLUDED_ERRNO_BITMASK')) {
     define(
@@ -12,7 +13,50 @@ if (!defined('ROLLBAR_INCLUDED_ERRNO_BITMASK')) {
 
 class Config
 {
+    private static $options = array(
+        'access_token',
+        'agent_log_location',
+        'allow_exec',
+        'endpoint',
+        'base_api_url',
+        'branch',
+        'capture_error_stacktraces',
+        'check_ignore',
+        'code_version',
+        'custom',
+        'enabled',
+        'environment',
+        'error_sample_rates',
+        'exception_sample_rates',
+        'fluent_host',
+        'fluent_port',
+        'fluent_tag',
+        'handler',
+        'host',
+        'include_error_code_context',
+        'include_exception_code_context',
+        'included_errno',
+        'logger',
+        'person',
+        'person_fn',
+        'root',
+        'scrub_fields',
+        'scrub_whitelist',
+        'timeout',
+        'report_suppressed',
+        'use_error_reporting',
+        'proxy',
+        'send_message_trace',
+        'include_raw_request_body',
+        'local_vars_dump',
+        'verbosity'
+    );
+    
     private $accessToken;
+    /**
+     * @var string $enabled Enable / disable Rollbar SDK.
+     */
+    private $enabled = true;
     /**
      * @var DataBuilder
      */
@@ -59,31 +103,44 @@ class Config
     /**
      * @var callable
      */
-    private $checkIgnore;
-    private $error_sample_rates = array();
-    private $exception_sample_rates = array();
+    private $check_ignore;
+    private $error_sample_rates;
+    private $exception_sample_rates;
     private $mt_randmax;
 
-    private $included_errno = ROLLBAR_INCLUDED_ERRNO_BITMASK;
+    private $included_errno;
     private $use_error_reporting = false;
     
     /**
      * @var boolean Should debug_backtrace() data be sent with string messages
-     * sent through RollbarLogger::log()
+     * sent through RollbarLogger::log().
      */
     private $sendMessageTrace = false;
+    
+    /**
+     * @var string (One of the \Psr\Log\LogLevel constants) How much debugging
+     * info should be recorded in the Rollbar debug log file.
+     * ($rollbarLogger->getDebugLogFile() => commonly /tmp/rollbar.debug.log.
+     * Default: Psr\Log\LogLevel::ERROR
+     */
+    private $verbosity;
 
     public function __construct(array $configArray)
     {
+        $this->verbosity = \Rollbar\Defaults::get()->verbosity();
+        $this->included_errno = \Rollbar\Defaults::get()->includedErrno();
+        
         $this->levelFactory = new LevelFactory();
         $this->utilities = new Utilities();
         
         $this->updateConfig($configArray);
 
+        $this->error_sample_rates = \Rollbar\Defaults::get()->errorSampleRates();
         if (isset($configArray['error_sample_rates'])) {
             $this->error_sample_rates = $configArray['error_sample_rates'];
         }
         
+        $this->exception_sample_rates = \Rollbar\Defaults::get()->exceptionSampleRates();
         if (isset($configArray['exception_sample_rates'])) {
             $this->exception_sample_rates = $configArray['exception_sample_rates'];
         }
@@ -102,6 +159,11 @@ class Config
             }
         }
         $this->mt_randmax = mt_getrandmax();
+    }
+    
+    public static function listOptions()
+    {
+        return self::$options;
     }
 
     public function configure($config)
@@ -123,6 +185,7 @@ class Config
     {
         $this->configArray = $config;
 
+        $this->setEnabled($config);
         $this->setAccessToken($config);
         $this->setDataBuilder($config);
         $this->setTransformer($config);
@@ -137,11 +200,13 @@ class Config
         $this->setResponseHandler($config);
         $this->setCheckIgnoreFunction($config);
         $this->setSendMessageTrace($config);
+        $this->setVerbosity($config);
 
         if (isset($config['included_errno'])) {
             $this->included_errno = $config['included_errno'];
         }
 
+        $this->use_error_reporting = \Rollbar\Defaults::get()->useErrorReporting();
         if (isset($config['use_error_reporting'])) {
             $this->use_error_reporting = $config['use_error_reporting'];
         }
@@ -154,6 +219,29 @@ class Config
         }
         $this->utilities->validateString($config['access_token'], "config['access_token']", 32, false);
         $this->accessToken = $config['access_token'];
+    }
+
+    private function setEnabled($config)
+    {
+        if (array_key_exists('enabled', $config) && $config['enabled'] === false) {
+            $this->disable();
+        } else {
+            if (\Rollbar\Defaults::get()->enabled() === false) {
+                $this->disable();
+            } else {
+                $this->enable();
+            }
+        }
+    }
+    
+    public function enable()
+    {
+        $this->enabled = true;
+    }
+    
+    public function disable()
+    {
+        $this->enabled = false;
     }
 
     private function setDataBuilder($config)
@@ -200,6 +288,10 @@ class Config
         if (!isset($this->reportSuppressed)) {
             $this->reportSuppressed = isset($config['report_suppressed']) && $config['report_suppressed'];
         }
+        
+        if (!isset($this->reportSuppressed)) {
+            $this->reportSuppressed = \Rollbar\Defaults::get()->reportSuppressed();
+        }
     }
 
     private function setFilters($config)
@@ -210,6 +302,7 @@ class Config
     private function setSender($config)
     {
         $expected = "Rollbar\Senders\SenderInterface";
+        
         $default = "Rollbar\Senders\CurlSender";
 
         $this->setTransportOptions($config);
@@ -322,11 +415,14 @@ class Config
 
     private function setCheckIgnoreFunction($config)
     {
-        if (!isset($config['checkIgnore'])) {
-            return;
+        // Remain backwards compatible
+        if (isset($config['checkIgnore'])) {
+            $this->check_ignore = $config['checkIgnore'];
         }
-
-        $this->checkIgnore = $config['checkIgnore'];
+        
+        if (isset($config['check_ignore'])) {
+            $this->check_ignore = $config['check_ignore'];
+        }
     }
 
     private function setSendMessageTrace($config)
@@ -336,6 +432,20 @@ class Config
         }
 
         $this->sendMessageTrace = $config['send_message_trace'];
+    }
+    
+    private function setVerbosity($config)
+    {
+        if (!isset($config['verbosity'])) {
+            return;
+        }
+
+        $this->verbosity = $config['verbosity'];
+    }
+    
+    public function getVerbosity()
+    {
+        return $this->verbosity;
     }
 
     /**
@@ -461,6 +571,16 @@ class Config
         return $this->accessToken;
     }
 
+    public function enabled()
+    {
+        return $this->enabled === true;
+    }
+    
+    public function disabled()
+    {
+        return !$this->enabled();
+    }
+
     public function getSendMessageTrace()
     {
         return $this->sendMessageTrace;
@@ -468,14 +588,14 @@ class Config
 
     public function checkIgnored($payload, $accessToken, $toLog, $isUncaught)
     {
-        if (isset($this->checkIgnore)) {
+        if (isset($this->check_ignore)) {
             try {
-                if (call_user_func($this->checkIgnore, $isUncaught, $toLog, $payload)) {
+                if (call_user_func($this->check_ignore, $isUncaught, $toLog, $payload)) {
                     return true;
                 }
             } catch (Exception $exception) {
                 // We should log that we are removing the custom checkIgnore
-                $this->checkIgnore = null;
+                $this->check_ignore = null;
             }
         }
         
@@ -634,9 +754,9 @@ class Config
         return error_reporting() === 0 && !$this->reportSuppressed;
     }
 
-    public function send(&$scrubbedPayload, $accessToken)
+    public function send(EncodedPayload $payload, $accessToken)
     {
-        return $this->sender->send($scrubbedPayload, $accessToken);
+        return $this->sender->send($payload, $accessToken);
     }
 
     public function sendBatch(&$batch, $accessToken)

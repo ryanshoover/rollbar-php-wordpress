@@ -10,6 +10,13 @@ use Rollbar\Payload\Level;
  */
 class PluginTest extends BaseTestCase {
     
+    private $subject;
+    
+    public function setUp()
+    {
+        $this->subject = \Rollbar\Wordpress\Plugin::instance();
+    }
+    
     /**
      * @dataProvider loggingLevelTestDataProvider
      */
@@ -21,7 +28,7 @@ class PluginTest extends BaseTestCase {
     )
     {
         
-        $plugin = \Rollbar\Wordpress\Plugin::instance();
+        $plugin = $this->subject;
         
         $plugin->setting('php_logging_enabled', 1);
         $plugin->setting(
@@ -101,7 +108,7 @@ class PluginTest extends BaseTestCase {
     {
         $expected = 'testConfigure';
         
-        $plugin = \Rollbar\Wordpress\Plugin::instance();
+        $plugin = $this->subject;
         
         $plugin->setting('php_logging_enabled', 1);
         $plugin->setting(
@@ -130,6 +137,17 @@ class PluginTest extends BaseTestCase {
         $output = $dataBuilder->makeData(Level::ERROR, "testing", array());
         
         $this->assertEquals($expected, $output->getEnvironment());
+    }
+    
+    public function testGetDefaultOption()
+    {
+        $this->assertEquals("production", $this->subject->getDefaultOption('environment'));
+        
+        putenv("WP_ENV=phpunit_test");
+        
+        $this->assertEquals("phpunit_test", $this->subject->getDefaultOption('environment'));
+        
+        putenv("WP_ENV");
     }
     
 }
