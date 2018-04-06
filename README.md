@@ -146,6 +146,7 @@ This is only for contributors with committer access:
     2. Add record in the `Changelog` section of the `readme.txt`.
     3. Add record in the `Upgrade Notice` section of the `readme.txt`.
     4. Bump the plugin version in `rollbar-php-wordpress.php` in the `Version:` comment.
+    5. Bump the plugin version in `src/Plugin.php` in the `\Rollbar\Wordpress\Plugin::VERSION` constant.
     5. Add and commit the changes you made to bump the plugin version: `git add readme.txt rollbar-php-wordpress.php && git commit -m"Bump version to v[version number]"`
     6. Bump versions of the JS and CSS files versions in Settings.php class to force refresh of those assets on users' installations.
 2. Tag the new version from the `master` branch and push upstream with `git tag v[version number] && git push --tags`.
