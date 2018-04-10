@@ -312,6 +312,8 @@ class Settings
         $readme = file_get_contents(__DIR__ . '/../vendor/rollbar/rollbar/README.md');
         
         $option_pos = stripos($readme, '<dt>' . $option);
+
+        $desc = '';
         
         if ($option_pos !== false) {
         
