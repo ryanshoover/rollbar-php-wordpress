@@ -168,7 +168,7 @@ class UI
         <?php
     }
     
-    public function status($settings)
+    public static function status($settings)
     {
         extract($settings);
 
@@ -241,7 +241,7 @@ class UI
         return array();
     }
     
-    public function getIncludedErrnoDescriptions($value)
+    public static function getIncludedErrnoDescriptions($value)
     {
         switch ($value) {
             case E_ERROR:
