@@ -9,7 +9,7 @@ if( !defined( 'ABSPATH' ) ) exit;
 
 class Plugin {
     
-    const VERSION = "2.3.0";
+    const VERSION = "2.3.1";
     
     private $config;
     private static $instance;
