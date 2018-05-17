@@ -3,7 +3,7 @@ Contributors: arturmoczulski
 Tags: rollbar, full stack, error, tracking, error tracking, error reporting, reporting, debug
 Requires at least: 3.5.1
 Tested up to: 4.8.2
-Stable tag: 2.3.1
+Stable tag: 2.4.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -106,6 +106,11 @@ Yes. It's actually the recommended method of installation.
 
 == Changelog ==
 
+= Version 2.4.0 (5th April 2018) =
+* Added capture_ip, capture_email and capture_username to the config options.
+* Fixed populating config options from the database to the plugin for boolean values.
+* Updated rollbar-php dependency to v1.5.0
+
 = Version 2.3.1 (10th April 2018) =
 * Fixed a bug in strict PHP setups (https://github.com/rollbar/rollbar-php-wordpress/issues/44)
 
@@ -158,6 +163,11 @@ Yes. It's actually the recommended method of installation.
 * Initial release!
 
 == Upgrade Notice ==
+
+= Version 2.4.0 (5th April 2018) =
+* Added capture_ip, capture_email and capture_username to the config options.
+* Fixed populating config options from the database to the plugin for boolean values.
+* Updated rollbar-php dependency to v1.5.0
 
 = Version 2.3.1 (10th April 2018) =
 * Fixed a bug in strict PHP setups (https://github.com/rollbar/rollbar-php-wordpress/issues/44)
