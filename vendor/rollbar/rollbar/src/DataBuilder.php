@@ -17,6 +17,8 @@ use Rollbar\Exceptions\PersonFuncException;
 
 class DataBuilder implements DataBuilderInterface
 {
+    const ANONYMIZE_IP = 'anonymize';
+    
     protected static $defaults;
 
     protected $environment;
@@ -49,6 +51,9 @@ class DataBuilder implements DataBuilderInterface
     protected $rawRequestBody;
     protected $localVarsDump;
     protected $captureErrorStacktraces;
+    protected $captureIP;
+    protected $captureEmail;
+    protected $captureUsername;
     
     /**
      * @var LevelFactory
@@ -98,6 +103,27 @@ class DataBuilder implements DataBuilderInterface
         $this->setLocalVarsDump($config);
         $this->setCaptureErrorStacktraces($config);
         $this->setLevelFactory($config);
+        $this->setCaptureEmail($config);
+        $this->setCaptureUsername($config);
+        $this->setCaptureIP($config);
+    }
+
+    protected function setCaptureIP($config)
+    {
+        $fromConfig = isset($config['capture_ip']) ? $config['capture_ip'] : null;
+        $this->captureIP = self::$defaults->captureIP($fromConfig);
+    }
+    
+    protected function setCaptureEmail($config)
+    {
+        $fromConfig = isset($config['capture_email']) ? $config['capture_email'] : null;
+        $this->captureEmail = self::$defaults->captureEmail($fromConfig);
+    }
+    
+    protected function setCaptureUsername($config)
+    {
+        $fromConfig = isset($config['capture_username']) ? $config['capture_username'] : null;
+        $this->captureUsername = self::$defaults->captureUsername($fromConfig);
     }
 
     protected function setEnvironment($config)
@@ -782,20 +808,39 @@ class DataBuilder implements DataBuilderInterface
      */
     protected function getUserIp()
     {
-        if (!isset($_SERVER)) {
+        if (!isset($_SERVER) || $this->captureIP === false) {
             return null;
         }
+        
+        $ipAddress = null;
+        
         $forwardFor = isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? $_SERVER['HTTP_X_FORWARDED_FOR'] : null;
         if ($forwardFor) {
             // return everything until the first comma
             $parts = explode(',', $forwardFor);
-            return $parts[0];
+            $ipAddress = $parts[0];
         }
         $realIp = isset($_SERVER['HTTP_X_REAL_IP']) ? $_SERVER['HTTP_X_REAL_IP'] : null;
         if ($realIp) {
-            return $realIp;
+            $ipAddress = $realIp;
         }
-        return isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
+        $ipAddress = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
+        
+        if ($this->captureIP === DataBuilder::ANONYMIZE_IP) {
+            if (filter_var($ipAddress, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+                $parts = explode('.', $ipAddress);
+                $ipAddress = $parts[0] . '.' . $parts[1] . '.' . $parts[2] . '.0/24';
+            } elseif (filter_var($ipAddress, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+                $parts = explode(':', $ipAddress);
+                $ipAddress =
+                    $parts[0] . ':' .
+                    $parts[1] . ':' .
+                    $parts[2] . ':' .
+                    '0000:0000:0000:0000:0000';
+            }
+        }
+        
+        return $ipAddress;
     }
 
     protected function getRequestExtras()
@@ -825,12 +870,12 @@ class DataBuilder implements DataBuilderInterface
         $identifier = $personData['id'];
 
         $email = null;
-        if (isset($personData['email'])) {
+        if ($this->captureEmail && isset($personData['email'])) {
             $email = $personData['email'];
         }
 
         $username = null;
-        if (isset($personData['username'])) {
+        if ($this->captureUsername && isset($personData['username'])) {
             $username = $personData['username'];
         }
 
