@@ -214,7 +214,7 @@ class UI
         if (!isset(self::$setting_value_types[$setting])) {
             throw new \Exception(
                 'Configuration option ' . 
-                $option . ' doesn\'t exist in Rollbar.'
+                $setting . ' doesn\'t exist in Rollbar.'
             );
         }
         
