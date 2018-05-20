@@ -1219,68 +1219,6 @@
         ]
     },
     {
-        "name": "rollbar/rollbar",
-        "version": "v1.5.0",
-        "version_normalized": "1.5.0.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/rollbar/rollbar-php.git",
-            "reference": "3279d6b8da70842ca7c5bab1c1183261aa83d0e2"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/rollbar/rollbar-php/zipball/3279d6b8da70842ca7c5bab1c1183261aa83d0e2",
-            "reference": "3279d6b8da70842ca7c5bab1c1183261aa83d0e2",
-            "shasum": ""
-        },
-        "require": {
-            "ext-curl": "*",
-            "monolog/monolog": "^1.23",
-            "psr/log": "^1.0.1"
-        },
-        "require-dev": {
-            "codeclimate/php-test-reporter": "dev-master",
-            "mockery/mockery": "0.9.*",
-            "monolog/monolog": "^1.23",
-            "packfire/php5.3-compat": "*",
-            "phpmd/phpmd": "@stable",
-            "phpunit/phpunit": "4.8.*",
-            "squizlabs/php_codesniffer": "2.*"
-        },
-        "suggest": {
-            "fluent/logger": "Needed to use the 'fluent' handler for fluentd support",
-            "packfire/php5.3-compat": "for backward compatibility with PHP 5.3"
-        },
-        "time": "2018-05-12T05:51:26+00:00",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "Rollbar\\": "src/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Rollbar, Inc.",
-                "email": "support@rollbar.com",
-                "role": "Developer"
-            }
-        ],
-        "description": "Monitors errors and exceptions and reports them to Rollbar",
-        "homepage": "http://github.com/rollbar/rollbar-php",
-        "keywords": [
-            "debugging",
-            "errors",
-            "exceptions",
-            "logging",
-            "monitoring"
-        ]
-    },
-    {
         "name": "phpspec/prophecy",
         "version": "1.7.6",
         "version_normalized": "1.7.6.0",
@@ -1404,5 +1342,67 @@
         ],
         "description": "Symfony Yaml Component",
         "homepage": "https://symfony.com"
+    },
+    {
+        "name": "rollbar/rollbar",
+        "version": "v1.5.1",
+        "version_normalized": "1.5.1.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/rollbar/rollbar-php.git",
+            "reference": "f8816f2e633f7289c373bb35c1979a665007d90b"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/rollbar/rollbar-php/zipball/f8816f2e633f7289c373bb35c1979a665007d90b",
+            "reference": "f8816f2e633f7289c373bb35c1979a665007d90b",
+            "shasum": ""
+        },
+        "require": {
+            "ext-curl": "*",
+            "monolog/monolog": "^1.23",
+            "psr/log": "^1.0.1"
+        },
+        "require-dev": {
+            "codeclimate/php-test-reporter": "dev-master",
+            "mockery/mockery": "0.9.*",
+            "monolog/monolog": "^1.23",
+            "packfire/php5.3-compat": "*",
+            "phpmd/phpmd": "@stable",
+            "phpunit/phpunit": "4.8.*",
+            "squizlabs/php_codesniffer": "2.*"
+        },
+        "suggest": {
+            "fluent/logger": "Needed to use the 'fluent' handler for fluentd support",
+            "packfire/php5.3-compat": "for backward compatibility with PHP 5.3"
+        },
+        "time": "2018-05-20T04:54:14+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Rollbar\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Rollbar, Inc.",
+                "email": "support@rollbar.com",
+                "role": "Developer"
+            }
+        ],
+        "description": "Monitors errors and exceptions and reports them to Rollbar",
+        "homepage": "http://github.com/rollbar/rollbar-php",
+        "keywords": [
+            "debugging",
+            "errors",
+            "exceptions",
+            "logging",
+            "monitoring"
+        ]
     }
 ]
