@@ -289,9 +289,9 @@ class Plugin {
         
         foreach (UI::settingsOfType(UI::SETTING_INPUT_TYPE_BOOLEAN) as $setting) {
             
-            if (isset($config[$setting]) && $config[$setting] == 'false') {
+            if (isset($config[$setting]) && $config[$setting] === 'false') {
                 $config[$setting] = false;
-            } else if (isset($config[$setting]) && $config[$setting] == 'true') {
+            } else if (isset($config[$setting]) && $config[$setting] === 'true') {
                 $config[$setting] = true;
             }
         }
