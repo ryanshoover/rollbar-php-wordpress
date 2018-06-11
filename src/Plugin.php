@@ -365,25 +365,24 @@ class Plugin {
     
     public function getDefaultOption($setting)
     {
-        $method = lcfirst(str_replace('_', '', ucwords($setting, '_')));
-            
         // Handle the "branch" exception
         switch($method) {
             case "branch":
-                $method = "gitBranch";
+                $method = "git_branch";
                 break;
         }
         
         $rollbarDefaults = \Rollbar\Defaults::get();
         $wordpressDefaults = \Rollbar\Wordpress\Defaults::instance();
+        
         $value = null;
         
         if (method_exists($wordpressDefaults, $method) && $value === null) {
             $value = $wordpressDefaults->$method();
         }
         
-        if (method_exists($rollbarDefaults, $method) && $value === null) {
-            $value = $rollbarDefaults->$method();
+        if ($value === null) {
+            $value = $rollbarDefaults->fromSnakeCase($setting);
         }
         
         return $value;
