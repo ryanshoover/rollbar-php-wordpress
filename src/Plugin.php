@@ -382,7 +382,11 @@ class Plugin {
         }
         
         if ($value === null) {
-            $value = $rollbarDefaults->fromSnakeCase($setting);
+            try {
+                $value = $rollbarDefaults->fromSnakeCase($setting);
+            } catch (\Exception $e) {
+                $value = null;
+            }
         }
         
         return $value;
