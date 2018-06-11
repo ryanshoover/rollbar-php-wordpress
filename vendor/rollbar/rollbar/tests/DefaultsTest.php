@@ -80,12 +80,6 @@ class DefaultsTest extends BaseRollbarTest
         $this->assertEquals($expected, $this->defaults->psrLevels());
     }
 
-    public function testGitHash()
-    {
-        $val = rtrim(shell_exec('git rev-parse --verify HEAD'));
-        $this->assertEquals($val, $this->defaults->gitHash());
-    }
-
     public function testGitBranch()
     {
         $val = rtrim(shell_exec('git rev-parse --abbrev-ref HEAD'));
@@ -251,5 +245,38 @@ class DefaultsTest extends BaseRollbarTest
     public function testCaptureUsername()
     {
         $this->assertFalse($this->defaults->captureUsername());
+    }
+    
+    public function testDefaultsForConfigOptions()
+    {
+        foreach (\Rollbar\Config::listOptions() as $option) {
+            if ($option == 'access_token' ||
+                $option == 'logger' ||
+                $option == 'person' ||
+                $option == 'person_fn' ||
+                $option == 'scrub_whitelist' ||
+                $option == 'proxy' ||
+                $option == 'include_raw_request_body') {
+                continue;
+            } elseif ($option == 'base_api_url') {
+                $option = 'endpoint';
+            } elseif ($option == 'branch') {
+                $option = 'git_branch';
+            } elseif ($option == 'capture_ip') {
+                $option = 'captureIP';
+            } elseif ($option == 'root') {
+                $option = 'server_root';
+            }
+            
+            $this->defaults->fromSnakeCase($option);
+        }
+    }
+    
+    public function testFromSnakeCase()
+    {
+        $this->assertEquals(
+            'warning',
+            \Rollbar\Defaults::get()->fromSnakeCase('message_level')
+        );
     }
 }

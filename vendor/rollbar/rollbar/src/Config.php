@@ -100,19 +100,19 @@ class Config
     private $scrubber;
 
     private $batched = false;
-    private $batch_size = 50;
+    private $batchSize = 50;
 
     private $custom = array();
     /**
      * @var callable
      */
-    private $check_ignore;
-    private $error_sample_rates;
-    private $exception_sample_rates;
-    private $mt_randmax;
+    private $checkIgnore;
+    private $errorSampleRates;
+    private $exceptionSampleRates;
+    private $mtRandmax;
 
-    private $included_errno;
-    private $use_error_reporting = false;
+    private $includedErrno;
+    private $useErrorReporting = false;
     
     /**
      * @var boolean Should debug_backtrace() data be sent with string messages
@@ -131,21 +131,21 @@ class Config
     public function __construct(array $configArray)
     {
         $this->verbosity = \Rollbar\Defaults::get()->verbosity();
-        $this->included_errno = \Rollbar\Defaults::get()->includedErrno();
+        $this->includedErrno = \Rollbar\Defaults::get()->includedErrno();
         
         $this->levelFactory = new LevelFactory();
         $this->utilities = new Utilities();
         
         $this->updateConfig($configArray);
 
-        $this->error_sample_rates = \Rollbar\Defaults::get()->errorSampleRates();
+        $this->errorSampleRates = \Rollbar\Defaults::get()->errorSampleRates();
         if (isset($configArray['error_sample_rates'])) {
-            $this->error_sample_rates = $configArray['error_sample_rates'];
+            $this->errorSampleRates = $configArray['error_sample_rates'];
         }
         
-        $this->exception_sample_rates = \Rollbar\Defaults::get()->exceptionSampleRates();
+        $this->exceptionSampleRates = \Rollbar\Defaults::get()->exceptionSampleRates();
         if (isset($configArray['exception_sample_rates'])) {
-            $this->exception_sample_rates = $configArray['exception_sample_rates'];
+            $this->exceptionSampleRates = $configArray['exception_sample_rates'];
         }
 
         $levels = array(E_WARNING, E_NOTICE, E_USER_ERROR, E_USER_WARNING,
@@ -157,11 +157,11 @@ class Config
         $curr = 1;
         for ($i = 0, $num = count($levels); $i < $num; $i++) {
             $level = $levels[$i];
-            if (!isset($this->error_sample_rates[$level])) {
-                $this->error_sample_rates[$level] = $curr;
+            if (!isset($this->errorSampleRates[$level])) {
+                $this->errorSampleRates[$level] = $curr;
             }
         }
-        $this->mt_randmax = mt_getrandmax();
+        $this->mtRandmax = mt_getrandmax();
     }
     
     public static function listOptions()
@@ -206,12 +206,12 @@ class Config
         $this->setVerbosity($config);
 
         if (isset($config['included_errno'])) {
-            $this->included_errno = $config['included_errno'];
+            $this->includedErrno = $config['included_errno'];
         }
 
-        $this->use_error_reporting = \Rollbar\Defaults::get()->useErrorReporting();
+        $this->useErrorReporting = \Rollbar\Defaults::get()->useErrorReporting();
         if (isset($config['use_error_reporting'])) {
-            $this->use_error_reporting = $config['use_error_reporting'];
+            $this->useErrorReporting = $config['use_error_reporting'];
         }
     }
 
@@ -332,7 +332,7 @@ class Config
     private function setBatchSize($config)
     {
         if (array_key_exists('batch_size', $config)) {
-            $this->batch_size = $config['batch_size'];
+            $this->batchSize = $config['batch_size'];
         }
     }
 
@@ -372,6 +372,10 @@ class Config
 
         if (array_key_exists('proxy', $config)) {
             $config['senderOptions']['proxy'] = $config['proxy'];
+        }
+
+        if (array_key_exists('ca_cert_path', $config)) {
+            $config['senderOptions']['ca_cert_path'] = $config['ca_cert_path'];
         }
     }
 
@@ -420,11 +424,11 @@ class Config
     {
         // Remain backwards compatible
         if (isset($config['checkIgnore'])) {
-            $this->check_ignore = $config['checkIgnore'];
+            $this->checkIgnore = $config['checkIgnore'];
         }
         
         if (isset($config['check_ignore'])) {
-            $this->check_ignore = $config['check_ignore'];
+            $this->checkIgnore = $config['check_ignore'];
         }
     }
 
@@ -544,7 +548,7 @@ class Config
 
     public function getBatchSize()
     {
-        return $this->batch_size;
+        return $this->batchSize;
     }
 
     /**
@@ -591,14 +595,14 @@ class Config
 
     public function checkIgnored($payload, $accessToken, $toLog, $isUncaught)
     {
-        if (isset($this->check_ignore)) {
+        if (isset($this->checkIgnore)) {
             try {
-                if (call_user_func($this->check_ignore, $isUncaught, $toLog, $payload)) {
+                if (call_user_func($this->checkIgnore, $isUncaught, $toLog, $payload)) {
                     return true;
                 }
             } catch (Exception $exception) {
                 // We should log that we are removing the custom checkIgnore
-                $this->check_ignore = null;
+                $this->checkIgnore = null;
             }
         }
         
@@ -644,21 +648,21 @@ class Config
      */
     public function shouldIgnoreError($errno)
     {
-        if ($this->use_error_reporting && ($errno & error_reporting()) === 0) {
+        if ($this->useErrorReporting && ($errno & error_reporting()) === 0) {
             // ignore due to error_reporting level
             return true;
         }
 
-        if ($this->included_errno != -1 && ($errno & $this->included_errno) != $errno) {
+        if ($this->includedErrno != -1 && ($errno & $this->includedErrno) != $errno) {
             // ignore
             return true;
         }
 
-        if (isset($this->error_sample_rates[$errno])) {
+        if (isset($this->errorSampleRates[$errno])) {
             // get a float in the range [0, 1)
             // mt_rand() is inclusive, so add 1 to mt_randmax
-            $float_rand = mt_rand() / ($this->mt_randmax + 1);
-            if ($float_rand > $this->error_sample_rates[$errno]) {
+            $float_rand = mt_rand() / ($this->mtRandmax + 1);
+            if ($float_rand > $this->errorSampleRates[$errno]) {
                 // skip
                 return true;
             }
@@ -692,7 +696,7 @@ class Config
     {
         // get a float in the range [0, 1)
         // mt_rand() is inclusive, so add 1 to mt_randmax
-        $floatRand = mt_rand() / ($this->mt_randmax + 1);
+        $floatRand = mt_rand() / ($this->mtRandmax + 1);
         if ($floatRand > $this->exceptionSampleRate($toLog)) {
             // skip
             return true;
@@ -712,7 +716,7 @@ class Config
     public function exceptionSampleRate(\Exception $toLog)
     {
         $sampleRate = 1.0;
-        if (count($this->exception_sample_rates) == 0) {
+        if (count($this->exceptionSampleRates) == 0) {
             return $sampleRate;
         }
         
@@ -726,8 +730,8 @@ class Config
         $exceptionClasses = array_reverse($exceptionClasses);
         
         foreach ($exceptionClasses as $exceptionClass) {
-            if (isset($this->exception_sample_rates["$exceptionClass"])) {
-                $sampleRate = $this->exception_sample_rates["$exceptionClass"];
+            if (isset($this->exceptionSampleRates["$exceptionClass"])) {
+                $sampleRate = $this->exceptionSampleRates["$exceptionClass"];
             }
         }
         
