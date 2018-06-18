@@ -3,7 +3,7 @@ Contributors: arturmoczulski
 Tags: rollbar, full stack, error, tracking, error tracking, error reporting, reporting, debug
 Requires at least: 3.5.1
 Tested up to: 4.8.2
-Stable tag: 2.4.3
+Stable tag: 2.4.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -106,6 +106,9 @@ Yes. It's actually the recommended method of installation.
 
 == Changelog ==
 
+= Version 2.4.4 (June 18th 2018) =
+* Update rollbar-php to v1.5.3
+
 = Version 2.4.3 (June 11th 2018) =
 * Update rollbar-php to v1.5.2
 * Use rollbar-php:v1.5.2 new defaults methods to handle restoring default settings.
@@ -173,6 +176,13 @@ Yes. It's actually the recommended method of installation.
 * Initial release!
 
 == Upgrade Notice ==
+
+= Version 2.4.4 (June 18th 2018) =
+* Update rollbar-php to v1.5.3
+
+= Version 2.4.3 (June 11th 2018) =
+* Update rollbar-php to v1.5.2
+* Use rollbar-php:v1.5.2 new defaults methods to handle restoring default settings.
 
 = Version 2.4.2 (25th May 2018) =
 * Fixed the plugin not always respecting the boolean true settings (https://github.com/rollbar/rollbar-php-wordpress/issues/58)
