@@ -3,6 +3,8 @@
 
 Rollbar full-stack error tracking for WordPress
 
+The full documentation is available [here](https://docs.rollbar.com/v1.0.0/docs/wordpress).
+
 ## Description
 Rollbar collects errors that happen in your application, notifies you, and analyzes them so you can debug and fix them.
 
