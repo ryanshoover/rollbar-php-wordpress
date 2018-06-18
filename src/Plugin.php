@@ -16,7 +16,6 @@ class Plugin {
     private $settings = null;
     
     private function __construct() {
-        $this->fetchSettings();
         $this->config = array();
     }
     
@@ -232,6 +231,8 @@ class Plugin {
             return;
         }
         
+        $this->fetchSettings();
+        
         // installs global error and exception handlers
         try {
             
@@ -365,10 +366,13 @@ class Plugin {
     
     public function getDefaultOption($setting)
     {
+        $spaced = str_replace('_', ' ', $setting);
+        $method = lcfirst(str_replace(' ', '', ucwords($spaced)));
+        
         // Handle the "branch" exception
         switch($method) {
             case "branch":
-                $method = "git_branch";
+                $method = "gitBranch";
                 break;
         }
         
@@ -383,7 +387,7 @@ class Plugin {
         
         if ($value === null) {
             try {
-                $value = $rollbarDefaults->fromSnakeCase($setting);
+                $value = $rollbarDefaults->$method();
             } catch (\Exception $e) {
                 $value = null;
             }
