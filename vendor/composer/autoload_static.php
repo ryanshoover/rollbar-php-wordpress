@@ -6,6 +6,10 @@ namespace Composer\Autoload;
 
 class ComposerStaticInited105be67bb9151573b323ff5c8bb30a
 {
+    public static $files = array (
+        '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
+    );
+
     public static $prefixLengthsPsr4 = array (
         'p' => 
         array (
@@ -17,6 +21,7 @@ class ComposerStaticInited105be67bb9151573b323ff5c8bb30a
         ),
         'S' => 
         array (
+            'Symfony\\Polyfill\\Ctype\\' => 23,
             'Symfony\\Component\\Yaml\\' => 23,
         ),
         'R' => 
@@ -50,6 +55,10 @@ class ComposerStaticInited105be67bb9151573b323ff5c8bb30a
         'Webmozart\\Assert\\' => 
         array (
             0 => __DIR__ . '/..' . '/webmozart/assert/src',
+        ),
+        'Symfony\\Polyfill\\Ctype\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/polyfill-ctype',
         ),
         'Symfony\\Component\\Yaml\\' => 
         array (

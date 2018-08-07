@@ -41,6 +41,7 @@ class DataBuilder implements DataBuilderInterface
     protected $serverCodeVersion;
     protected $serverExtras;
     protected $custom;
+    protected $customDataMethod;
     protected $fingerprint;
     protected $title;
     protected $notifier;
@@ -106,6 +107,7 @@ class DataBuilder implements DataBuilderInterface
         $this->setCaptureEmail($config);
         $this->setCaptureUsername($config);
         $this->setCaptureIP($config);
+        $this->setCustomDataMethod($config);
     }
 
     protected function setCaptureIP($config)
@@ -278,23 +280,22 @@ class DataBuilder implements DataBuilderInterface
     {
         $this->custom = isset($config['custom']) ? $config['custom'] : \Rollbar\Defaults::get()->custom();
     }
+    
+    public function setCustomDataMethod($config)
+    {
+        $this->customDataMethod = isset($config['custom_data_method']) ?
+            $config['custom_data_method'] :
+            \Rollbar\Defaults::get()->customDataMethod();
+    }
 
     protected function setFingerprint($config)
     {
         $this->fingerprint = isset($config['fingerprint']) ? $config['fingerprint'] : null;
-        if (!is_null($this->fingerprint) && !is_callable($this->fingerprint)) {
-            $msg = "If set, config['fingerprint'] must be a callable that returns a uuid string";
-            throw new \InvalidArgumentException($msg);
-        }
     }
 
     protected function setTitle($config)
     {
         $this->title = isset($config['title']) ? $config['title'] : null;
-        if (!is_null($this->title) && !is_callable($this->title)) {
-            $msg = "If set, config['title'] must be a callable that returns a string";
-            throw new \InvalidArgumentException($msg);
-        }
     }
 
     protected function setNotifier($config)
@@ -369,7 +370,7 @@ class DataBuilder implements DataBuilderInterface
             ->setPerson($this->getPerson())
             ->setServer($this->getServer())
             ->setCustom($this->getCustomForPayload($toLog, $context))
-            ->setFingerprint($this->getFingerprint())
+            ->setFingerprint($this->getFingerprint($context))
             ->setTitle($this->getTitle())
             ->setUuid($this->getUuid())
             ->setNotifier($this->getNotifier());
@@ -489,7 +490,7 @@ class DataBuilder implements DataBuilderInterface
         $source = $this->getSourceLines($filename);
 
         $total = count($source);
-        $line = $line - 1;
+        $line = max($line - 1, 0);
         $frame->setCode($source[$line]);
         $offset = 6;
         $min = max($line - $offset, 0);
@@ -812,7 +813,7 @@ class DataBuilder implements DataBuilderInterface
             return null;
         }
         
-        $ipAddress = null;
+        $ipAddress = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
         
         $forwardFor = isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? $_SERVER['HTTP_X_FORWARDED_FOR'] : null;
         if ($forwardFor) {
@@ -824,7 +825,6 @@ class DataBuilder implements DataBuilderInterface
         if ($realIp) {
             $ipAddress = $realIp;
         }
-        $ipAddress = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
         
         if ($this->captureIP === DataBuilder::ANONYMIZE_IP) {
             if (filter_var($ipAddress, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
@@ -937,6 +937,11 @@ class DataBuilder implements DataBuilderInterface
     {
         return $this->custom;
     }
+    
+    public function getCustomDataMethod()
+    {
+        return $this->customDataMethod;
+    }
 
     protected function getCustomForPayload($toLog, $context)
     {
@@ -950,6 +955,18 @@ class DataBuilder implements DataBuilderInterface
         } elseif (!is_array($custom)) {
             $custom = get_object_vars($custom);
         }
+        
+        if ($customDataMethod = $this->getCustomDataMethod()) {
+            $customDataMethodContext = isset($context['custom_data_method_context']) ?
+                $context['custom_data_method_context'] :
+                null;
+                
+            $customDataMethodResult = $customDataMethod($toLog, $customDataMethodContext);
+            
+            $custom = array_merge($custom, $customDataMethodResult);
+        }
+        
+        unset($context['custom_data_method_context']);
 
         return array_replace_recursive(array(), $context, $custom);
     }
@@ -974,9 +991,9 @@ class DataBuilder implements DataBuilderInterface
         unset($this->custom[$key]);
     }
 
-    protected function getFingerprint()
+    protected function getFingerprint($context)
     {
-        return $this->fingerprint;
+        return isset($context['fingerprint']) ? $context['fingerprint'] : $this->fingerprint;
     }
 
     protected function getTitle()

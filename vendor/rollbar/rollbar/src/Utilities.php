@@ -2,6 +2,11 @@
 
 final class Utilities
 {
+    public static function isWindows()
+    {
+        return strpos(strtolower(php_uname('s')), 'win') !== false;
+    }
+
     public static function validateString(
         $input,
         $name = "?",
@@ -76,7 +81,13 @@ final class Utilities
                 $val = $val->serialize();
             } elseif (is_array($val)) {
                 $val = self::serializeForRollbar($val);
+            } elseif (is_object($val)) {
+                $val = array(
+                    'class' => get_class($val),
+                    'value' => $val
+                );
             }
+            
             if ($customKeys !== null && in_array($key, $customKeys)) {
                 $returnVal[$key] = $val;
             } elseif (!is_null($val)) {

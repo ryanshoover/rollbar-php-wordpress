@@ -82,6 +82,7 @@ class Defaults
         $this->data['captureErrorStacktraces'] = true;
         $this->data['checkIgnore'] = null;
         $this->data['custom'] = null;
+        $this->data['customDataMethod'] = null;
         $this->data['enabled'] = true;
         $this->data['environment'] = 'production';
         $this->data['fluentHost'] = '127.0.0.1';
@@ -106,6 +107,7 @@ class Defaults
             'csrf_token',
             'access_token'
         );
+        $this->data['customTruncation'] = null;
         
         $this->utilities = $utilities;
     }
@@ -147,7 +149,8 @@ class Defaults
     {
         try {
             if (function_exists('shell_exec')) {
-                $output = rtrim(shell_exec('git rev-parse --abbrev-ref HEAD 2> /dev/null'));
+                $stdRedirCmd = Utilities::isWindows() ? " > NUL" : " 2> /dev/null";
+                $output = rtrim(shell_exec('git rev-parse --abbrev-ref HEAD' . $stdRedirCmd));
                 if ($output) {
                     return $output;
                 }
