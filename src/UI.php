@@ -312,6 +312,8 @@ class UI
         'check_ignore' => self::SETTING_INPUT_TYPE_PHP,
         'code_version' => self::SETTING_INPUT_TYPE_TEXT,
         'custom' => self::SETTING_INPUT_TYPE_PHP,
+        'custom_data_method' => self::SETTING_INPUT_TYPE_PHP,
+        'custom_truncation' => self::SETTING_INPUT_TYPE_TEXT,
         'enable_utf8_sanitization' => self::SETTING_INPUT_TYPE_BOOLEAN,
         'enabled' => self::SETTING_INPUT_TYPE_BOOLEAN,
         'environment' => self::SETTING_INPUT_TYPE_TEXT,
