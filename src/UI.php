@@ -212,10 +212,7 @@ class UI
     public static function getSettingType($setting)
     {
         if (!isset(self::$setting_value_types[$setting])) {
-            throw new \Exception(
-                'Configuration option ' . 
-                $setting . ' doesn\'t exist in Rollbar.'
-            );
+            return false;
         }
         
         if (is_array(self::$setting_value_types[$setting])) {
@@ -228,10 +225,7 @@ class UI
     public static function getSettingOptions($setting)
     {
         if (!isset(self::$setting_value_types[$setting])) {
-            throw new \Exception(
-                'Configuration option ' . 
-                $setting . ' doesn\'t exist in Rollbar.'
-            );
+            return false;
         }
         
         if (is_array(self::$setting_value_types[$setting])) {

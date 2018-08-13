@@ -209,6 +209,10 @@ class Settings
         $options = isset($overrides['options']) ? 
             $overrides['options'] : 
             UI::getSettingOptions($setting);
+            
+        if ($type === false || $options === false) {
+            return;
+        }
         
         $display_name = isset($overrides['display_name']) ? 
             $overrides['display_name'] : 
