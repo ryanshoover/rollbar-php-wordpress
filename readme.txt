@@ -3,7 +3,7 @@ Contributors: arturmoczulski
 Tags: rollbar, full stack, error, tracking, error tracking, error reporting, reporting, debug
 Requires at least: 3.5.1
 Tested up to: 4.8.2
-Stable tag: 2.4.5
+Stable tag: 2.4.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -105,6 +105,9 @@ Yes. It's actually the recommended method of installation.
 
 == Changelog ==
 
+= Version 2.4.6 (August 13th 2018) =
+* Configuration option custom_data_method doesn’t exist in Rollbar (https://github.com/rollbar/rollbar-php-wordpress/issues/66)
+
 = Version 2.4.5 (August 7th 2018) =
 * Update rollbar-php to v1.6.1
 * Remove mentions of IRC channel from README.md and readme.txt
@@ -179,6 +182,9 @@ Yes. It's actually the recommended method of installation.
 * Initial release!
 
 == Upgrade Notice ==
+
+= Version 2.4.6 (August 13th 2018) =
+* Configuration option custom_data_method doesn’t exist in Rollbar (https://github.com/rollbar/rollbar-php-wordpress/issues/66)
 
 = Version 2.4.5 (August 7th 2018) =
 * Update rollbar-php to v1.6.1
