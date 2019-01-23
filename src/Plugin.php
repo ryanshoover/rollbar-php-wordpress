@@ -388,6 +388,8 @@ class Plugin {
         if ($value === null) {
             try {
                 $value = $rollbarDefaults->$method();
+            } catch (\Throwable $e) {
+                $value = null;
             } catch (\Exception $e) {
                 $value = null;
             }
