@@ -364,7 +364,7 @@ class Settings
         foreach (UI::settingsOfType(UI::SETTING_INPUT_TYPE_BOOLEAN) as $setting) {
             
             if (!isset($settings[$setting])) {
-                $settings[$setting] = Plugin::instance()->getDefaultOption($setting);
+                $settings[$setting] = false;
             }
             
         }
