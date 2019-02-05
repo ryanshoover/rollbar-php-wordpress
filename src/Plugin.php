@@ -393,6 +393,9 @@ class Plugin {
             case "branch":
                 $method = "gitBranch";
                 break;
+            case "captureIp":
+                $method = "captureIP";
+                break;
         }
         
         $rollbarDefaults = \Rollbar\Defaults::get();

@@ -358,12 +358,13 @@ class Settings
     
     public static function preUpdate($settings)
     {
+        
         // Empty checkboxes don't get propagated into the $_POST at all. Fill out
-        // missing boolean settings as false.
+        // missing boolean settings with default values.
         foreach (UI::settingsOfType(UI::SETTING_INPUT_TYPE_BOOLEAN) as $setting) {
             
             if (!isset($settings[$setting])) {
-                $settings[$setting] = false;
+                $settings[$setting] = Plugin::instance()->getDefaultOption($setting);
             }
             
         }
