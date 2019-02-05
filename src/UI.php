@@ -179,6 +179,15 @@ class UI
         <?php
         self::textInput('server_side_access_token', $server_side_access_token);
         ?>
+            <p>
+                <small>
+                    <?php \_e('If no access token is provided here, the following will be used:', 'rollbar-wp'); ?>
+                    <ol>
+                        <li><?php \_e('the <code>ROLLBAR_ACCESS_TOKEN</code> constant usually defined in your <code>wp-config.php</code>'); ?></li>
+                        <li><?php \_e('the <code>ROLLBAR_ACCESS_TOKEN</code> server environment variable'); ?></li>
+                    </ol>
+                </small>
+            </p>
         </div>
         <br />
         <?php

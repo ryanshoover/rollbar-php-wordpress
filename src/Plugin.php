@@ -63,6 +63,19 @@ class Plugin {
             
         }
         
+        if (!isset($options['server_side_access_token']) || empty($options['server_side_access_token'])) {
+            
+            if (defined('ROLLBAR_ACCESS_TOKEN')) {
+                
+                $options['server_side_access_token'] = ROLLBAR_ACCESS_TOKEN;
+                
+            } else if ($token = getenv('ROLLBAR_ACCESS_TOKEN')) {
+                
+                $options['server_side_access_token'] = $token;
+                
+            }
+        }
+        
         $settings = array(
             
             'php_logging_enabled' => (!empty($options['php_logging_enabled'])) ? 1 : 0,
@@ -83,6 +96,12 @@ class Plugin {
         );
         
         foreach (\Rollbar\Config::listOptions() as $option) {
+            
+            // 'access_token' and 'enabled' are different in Wordpress plugin
+            // look for 'server_side_access_token' and 'php_logging_enabled' above
+            if (in_array($option, array('access_token', 'enabled'))) {
+                continue;
+            }
             
             if (!isset($options[$option])) {
                 $value = $this->getDefaultOption($option);
@@ -383,9 +402,7 @@ class Plugin {
         
         if (method_exists($wordpressDefaults, $method) && $value === null) {
             $value = $wordpressDefaults->$method();
-        }
-        
-        if ($value === null) {
+        } else if (method_exists($rollbarDefaults, $method) && $value === null) {
             try {
                 $value = $rollbarDefaults->$method();
             } catch (\Throwable $e) {
