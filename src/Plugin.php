@@ -402,7 +402,9 @@ class Plugin {
         
         if (method_exists($wordpressDefaults, $method) && $value === null) {
             $value = $wordpressDefaults->$method();
-        } else if (method_exists($rollbarDefaults, $method) && $value === null) {
+        }
+        
+        if (method_exists($rollbarDefaults, $method) && $value === null) {
             try {
                 $value = $rollbarDefaults->$method();
             } catch (\Throwable $e) {
