@@ -53,7 +53,7 @@ class Plugin {
      */
     private function fetchSettings() {
         
-        $options = $this->settings;
+        $options = $this->settings ?: array();
         
         if ($saved_options = get_option( 'rollbar_wp' )) {
             $options = array_merge($options, $saved_options);
