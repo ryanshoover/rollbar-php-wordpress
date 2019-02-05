@@ -174,6 +174,8 @@ class Plugin {
             $plugin->settings[$option] = $request->get_param($option);
         }
         
+        $plugin->settings['server_side_access_token'] = $request->get_param('server_side_access_token');
+        
         $response = null;
         
         try {
