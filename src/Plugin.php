@@ -410,7 +410,13 @@ class Plugin {
         $value = null;
         
         if (method_exists($wordpressDefaults, $method) && $value === null) {
-            $value = $wordpressDefaults->$method();
+            try {
+                $value = $wordpressDefaults->$method();
+            } catch (\Throwable $e) {
+                $value = null;
+            } catch (\Exception $e) {
+                $value = null;
+            }
         }
         
         if (method_exists($rollbarDefaults, $method) && $value === null) {
