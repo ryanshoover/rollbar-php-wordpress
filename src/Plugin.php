@@ -25,6 +25,7 @@ class Plugin {
             self::$instance->loadTextdomain();
             self::$instance->hooks();
             self::$instance->initSettings();
+            self::$instance->initPhpLogging();
         }
 
         return self::$instance;
@@ -136,7 +137,6 @@ class Plugin {
     }
 
     private function hooks() {
-        \add_action('init', array(&$this, 'initPhpLogging'));
         \add_action('wp_head', array(&$this, 'initJsLogging'));
         \add_action('admin_head', array(&$this, 'initJsLogging'));
         $this->registerTestEndpoint();
