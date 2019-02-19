@@ -183,7 +183,7 @@ class Settings
         $options = \Rollbar\Wordpress\Plugin::listOptions();
         $skip = array(
             'access_token', 'environment', 'enabled', 'included_errno',
-            'base_api_url'
+            'base_api_url', 'enable_must_use_plugin'
         );
         
         foreach ($options as $option) {
@@ -198,6 +198,18 @@ class Settings
             
             $this->addSetting($option, 'rollbar_wp_advanced');
         }
+        
+        $this->addSetting(
+            'enable_must_use_plugin', 
+            'rollbar_wp_advanced',
+            array(
+                'type' => UI::getSettingType('enable_must_use_plugin'),
+                'default' => \Rollbar\Wordpress\Defaults::enableMustUsePlugin(),
+                'description' => __('Allows Rollbar plugin to be loaded as early ' .
+                                    'as possible as a Must-Use plugin.', 'rollbar'),
+                'display_name' => 'Enable as a Must-Use plugin'
+            )
+        );
     }
     
     private function addSetting($setting, $section, array $overrides = array())
