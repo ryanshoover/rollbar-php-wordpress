@@ -206,7 +206,9 @@ class Settings
                 'type' => UI::getSettingType('enable_must_use_plugin'),
                 'default' => \Rollbar\Wordpress\Defaults::enableMustUsePlugin(),
                 'description' => __('Allows Rollbar plugin to be loaded as early ' .
-                                    'as possible as a Must-Use plugin.', 'rollbar'),
+                                    'as possible as a Must-Use plugin. Activating / ' .
+                                    'deactivating the plugin in the plugins admin panel ' .
+                                    'won\'t have an effect as long as this option in enabled.', 'rollbar'),
                 'display_name' => __('Enable as a Must-Use plugin', 'rollbar')
             )
         );

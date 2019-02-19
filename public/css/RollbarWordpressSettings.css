@@ -17,11 +17,6 @@
     color: hsla(0,0%,100%,.75);
 }
 
-#rollbar_settings_advanced table tr td p {
-    display: inline;
-    margin-left: 20px;
-}
-
 h2.rollbar-header {
     background: #2e5174;
     padding: 1em;
@@ -31,4 +26,14 @@ h2.rollbar-header {
 
 h2.rollbar-header .logo {
     margin-right: 0.5em;
+}
+
+.form-table .description {
+    font-size: 0.8em;
+    font-style: normal;
+}
+
+.setting-inputs {
+    float: left;
+    margin-right: 10px;
 }

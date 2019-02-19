@@ -9,6 +9,10 @@ class UI
     {
         extract($args);
         
+        ?>
+        <div class="setting-inputs">
+        <?php
+        
         switch ($type) {
             case self::SETTING_INPUT_TYPE_TEXT:
                 self::textInput($name, $value);
@@ -25,6 +29,10 @@ class UI
         }
         
         self::restoreDefault($name, $type, $default);
+        
+        ?>
+        </div>
+        <?php
         
         if (!empty($description)) {
             self::description($description);
@@ -49,7 +57,7 @@ class UI
     public static function description($description)
     {
         ?>
-        <p>
+        <p class="description">
             <?php _e($description, 'rollbar-wp'); ?>
         </p>
         <?php
