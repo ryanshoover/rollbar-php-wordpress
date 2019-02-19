@@ -3,7 +3,7 @@ Contributors: arturmoczulski
 Tags: rollbar, full stack, error, tracking, error tracking, error reporting, reporting, debug
 Requires at least: 3.5.1
 Tested up to: 4.8.2
-Stable tag: 2.4.10
+Stable tag: 2.5.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -105,6 +105,12 @@ Yes. It's actually the recommended method of installation.
 
 == Changelog ==
 
+= Version 2.5.0 (February 19th 2019) =
+* Moved Rollbar initialization from `plugins_loaded` hook to the invocation of the main plugin file (https://github.com/rollbar/rollbar-php-wordpress/issues/73)
+* Added support for running the plugin as a Must-Use plugin (https://github.com/rollbar/rollbar-php-wordpress/issues/73)
+* Added `Enable as a Must-Use plugin` settings (https://github.com/rollbar/rollbar-php-wordpress/issues/73)
+* UI improvements
+
 = Version 2.4.10 (February 5th 2019) =
 * Added support for ROLLBAR_ACCESS_TOKEN constant and respecting the ROLLBAR_ACCESS_TOKEN environment variable (https://github.com/rollbar/rollbar-php-wordpress/issues/72)
 * Fixed tests
@@ -196,6 +202,12 @@ Yes. It's actually the recommended method of installation.
 * Initial release!
 
 == Upgrade Notice ==
+
+= Version 2.5.0 (February 19th 2019) =
+* Moved Rollbar initialization from `plugins_loaded` hook to the invocation of the main plugin file (https://github.com/rollbar/rollbar-php-wordpress/issues/73)
+* Added support for running the plugin as a Must-Use plugin (https://github.com/rollbar/rollbar-php-wordpress/issues/73)
+* Added `Enable as a Must-Use plugin` settings (https://github.com/rollbar/rollbar-php-wordpress/issues/73)
+* UI improvements
 
 = Version 2.4.10 (February 5th 2019) =
 * Added support for ROLLBAR_ACCESS_TOKEN constant and respecting the ROLLBAR_ACCESS_TOKEN environment variable (https://github.com/rollbar/rollbar-php-wordpress/issues/72)
