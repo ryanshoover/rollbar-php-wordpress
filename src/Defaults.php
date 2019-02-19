@@ -39,7 +39,7 @@ class Defaults {
     
     public function enableMustUsePlugin()
     {
-        return true;
+        return false;
     }
 }
 
