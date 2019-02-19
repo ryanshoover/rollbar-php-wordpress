@@ -348,12 +348,17 @@ class Settings
     
     public static function flashRedirect($type, $message)
     {
+        self::flashMessage($type, $message);
+        
+        wp_redirect(admin_url('/options-general.php?page=rollbar_wp'));
+    }
+    
+    public static function flashMessage($type, $message)
+    {
         $_SESSION['rollbar_wp_flash_message'] = array(
             "type" => $type,
             "message" => $message
         );
-        
-        wp_redirect(admin_url('/options-general.php?page=rollbar_wp'));
     }
     
     public static function preUpdate($settings)
@@ -372,9 +377,19 @@ class Settings
         $settings['enabled'] = isset($settings['php_logging_enabled']) && $settings['php_logging_enabled'];
     
         if (isset($settings['enable_must_use_plugin']) && $settings['enable_must_use_plugin']) {
-            Plugin::instance()->enableMustUsePlugin();
+            try {
+                Plugin::instance()->enableMustUsePlugin();
+            } catch (\Exception $exception) {
+                self::flashMessage('error', 'Failed enabling the Must-Use plugin.');
+                $settings['enable_must_use_plugin'] = false;
+            }
         } else {
-            Plugin::instance()->disableMustUsePlugin();
+            try {
+                Plugin::instance()->disableMustUsePlugin();
+            } catch (\Exception $exception) {
+                self::flashMessage('error', 'Failed disabling the Must-Use plugin.');
+                $settings['enable_must_use_plugin'] = true;
+            }
         }
         
         // Don't store default values in the database. This is so that future updates

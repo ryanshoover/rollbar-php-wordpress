@@ -463,7 +463,8 @@ class Plugin {
     
     public function disableMustUsePlugin()
     {
-        if (!unlink(plugin_dir_path(__DIR__) . '../../mu-plugins/rollbar-mu-plugin.php')) {
+        $file = plugin_dir_path(__DIR__) . '../../mu-plugins/rollbar-mu-plugin.php';
+        if (file_exists($file) && !unlink($file)) {
             throw new \Exception("Can't delete the mu-plugin");
         }
     }
