@@ -154,6 +154,7 @@ class UI
                 value="Restore all defaults"
             />
         </form>
+        <br />
         <?php
     }
     

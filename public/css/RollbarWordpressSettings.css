@@ -8,11 +8,13 @@
 }
 
 .form-table tr {
-    background-color: rgba(0,0,0,0.05);
+    background-color: #f7f7f7;
 }
 
 .form-table tr th {
     padding-left: 10px;
+    background-color: #2e5174;
+    color: hsla(0,0%,100%,.75);
 }
 
 #rollbar_settings_advanced table tr td p {
