@@ -12,7 +12,13 @@ class Plugin {
     const VERSION = "2.4.10";
     
     private $config;
+    
     private static $instance;
+    
+    private static $pluginOptions = array(
+        'enable_must_use_plugin'
+    );
+    
     private $settings = null;
     
     private function __construct() {
@@ -100,7 +106,7 @@ class Plugin {
                 Settings::DEFAULT_LOGGING_LEVEL
         );
         
-        foreach (\Rollbar\Config::listOptions() as $option) {
+        foreach (self::listOptions() as $option) {
             
             // 'access_token' and 'enabled' are different in Wordpress plugin
             // look for 'server_side_access_token' and 'php_logging_enabled' above
@@ -170,7 +176,7 @@ class Plugin {
         
         $plugin = self::instance();
         
-        foreach(\Rollbar\Config::listOptions() as $option) {
+        foreach(self::listOptions() as $option) {
             $plugin->settings[$option] = $request->get_param($option);
         }
         
@@ -382,7 +388,7 @@ class Plugin {
     {
         $settings = array();
         
-        foreach (\Rollbar\Config::listOptions() as $option) {
+        foreach (self::listOptions() as $option) {
             $settings[$option] = $this->getDefaultOption($option);
         }
         
@@ -430,5 +436,35 @@ class Plugin {
         }
         
         return $value;
+    }
+    
+    public static function listOptions()
+    {
+        return array_merge(
+            \Rollbar\Config::listOptions(),
+            self::$pluginOptions
+        );
+    }
+    
+    public function enableMustUsePlugin()
+    {
+        $muPluginsDir = plugin_dir_path(__DIR__) . '../../mu-plugins/';
+        
+        $muPluginFilepath = plugin_dir_path(__DIR__) . 'mu-plugin/rollbar-mu-plugin.php';
+        
+        if (!file_exists($muPluginsDir) && !mkdir($muPluginsDir, 0700)) {
+            throw new \Exception("Can't create the mu-plugins directory: $muPluginsDir");
+        }
+        
+        if (!copy($muPluginFilepath, $muPluginsDir . 'rollbar-mu-plugin.php')) {
+            throw new \Exception("Can't copy mu-plugin from $muPluginFilepath to $muPluginsDir");
+        }
+    }
+    
+    public function disableMustUsePlugin()
+    {
+        if (!unlink(plugin_dir_path(__DIR__) . '../../mu-plugins/rollbar-mu-plugin.php')) {
+            throw new \Exception("Can't delete the mu-plugin");
+        }
     }
 }

@@ -380,5 +380,6 @@ class UI
                 \Psr\Log\LogLevel::DEBUG => '\Psr\Log\LogLevel::DEBUG'
             )
         ),
+        'enable_must_use_plugin' => self::SETTING_INPUT_TYPE_BOOLEAN,
     );
 }

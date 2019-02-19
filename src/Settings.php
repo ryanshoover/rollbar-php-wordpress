@@ -180,7 +180,7 @@ class Settings
             'rollbar_wp'
         );
         
-        $options = \Rollbar\Config::listOptions();
+        $options = \Rollbar\Wordpress\Plugin::listOptions();
         $skip = array(
             'access_token', 'environment', 'enabled', 'included_errno',
             'base_api_url'
@@ -227,7 +227,7 @@ class Settings
         $default = isset($overrides['default']) ? 
             $overrides['default'] : 
             $this->settingDefault($setting);
-        
+            
         $value = $this->setting($setting);
         
         \add_settings_field(
@@ -370,6 +370,12 @@ class Settings
         }
         
         $settings['enabled'] = isset($settings['php_logging_enabled']) && $settings['php_logging_enabled'];
+    
+        if (isset($settings['enable_must_use_plugin']) && $settings['enable_must_use_plugin']) {
+            Plugin::instance()->enableMustUsePlugin();
+        } else {
+            Plugin::instance()->disableMustUsePlugin();
+        }
         
         // Don't store default values in the database. This is so that future updates
         // to default values in PHP SDK don't get stored in users databases.
