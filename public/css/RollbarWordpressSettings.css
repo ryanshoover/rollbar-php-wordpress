@@ -1,3 +1,32 @@
 .hover-pointer:hover {
     cursor: pointer;
 }
+
+.form-table {
+    border-collapse: separate;
+    border-spacing: 0px 10px;
+}
+
+.form-table tr {
+    background-color: rgba(0,0,0,0.05);
+}
+
+.form-table tr th {
+    padding-left: 10px;
+}
+
+#rollbar_settings_advanced table tr td p {
+    display: inline;
+    margin-left: 20px;
+}
+
+h2.rollbar-header {
+    background: #2e5174;
+    padding: 1em;
+    color: #fff;
+    font-size: 2em;
+}
+
+h2.rollbar-header .logo {
+    margin-right: 0.5em;
+}

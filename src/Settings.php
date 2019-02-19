@@ -207,7 +207,7 @@ class Settings
                 'default' => \Rollbar\Wordpress\Defaults::enableMustUsePlugin(),
                 'description' => __('Allows Rollbar plugin to be loaded as early ' .
                                     'as possible as a Must-Use plugin.', 'rollbar'),
-                'display_name' => 'Enable as a Must-Use plugin'
+                'display_name' => __('Enable as a Must-Use plugin', 'rollbar')
             )
         );
     }
@@ -304,7 +304,10 @@ class Settings
         ?>
         <form action='options.php' method='post'>
 
-            <h2>Rollbar for WordPress</h2>
+            <h2 class="rollbar-header">
+                <img class="logo" alt="Rollbar" src="//cdn.rollbar.com/static/img/rollbar-icon-white.svg?ts=1548370449v8" width="auto" height="24">
+                Rollbar for WordPress
+            </h2>
 
             <?php
             \settings_fields('rollbar_wp');
