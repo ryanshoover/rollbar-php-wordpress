@@ -28,4 +28,4 @@ if( !class_exists('Rollbar\Rollbar') || !class_exists('Rollbar\Wordpress\Plugin'
     require_once \plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
 }
 
-\add_action( 'plugins_loaded', '\Rollbar\Wordpress\Plugin::load' );
+\Rollbar\Wordpress\Plugin::load();
