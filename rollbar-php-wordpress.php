@@ -1,8 +1,8 @@
 <?php
 /**
- * Plugin Name:     Rollbar
+ * Plugin Name:     Rollbar Fork
  * Plugin URI:      https://wordpress.org/plugins/rollbar
- * Description:     Rollbar full-stack error tracking for WordPress
+ * Description:     Fork of the plugin Rollbar full-stack error tracking for WordPress
  * Version:         2.5.1
  * Author:          Rollbar
  * Author URI:      https://rollbar.com
@@ -12,7 +12,7 @@
  * @author          flowdee,arturmoczulski
  * @copyright       Rollbar, Inc.
  */
- 
+
 namespace Rollbar\Wordpress;
 
 // Exit if accessed directly
@@ -20,7 +20,7 @@ if( !defined( 'ABSPATH' ) ) exit;
 
 /*
  * Libs
- * 
+ *
  * The included copy of rollbar-php is only going to be loaded if the it has
  * not been loaded through Composer yet.
  */
