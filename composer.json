@@ -1,5 +1,5 @@
 {
-    "name": "rollbar/rollbar-php-wordpress",
+    "name": "ryanshoover/rollbar-php-wordpress",
     "description": "WordPress plugin for Rollbar",
     "type": "wordpress-plugin",
     "require": {
